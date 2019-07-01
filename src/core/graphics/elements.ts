@@ -80,7 +80,7 @@ export interface Element {
   type: string;
   style?: Style;
   selectable?: Selectable;
-  'data-datum'?: string;
+  "data-datum"?: string;
 }
 
 export interface ChartContainerElement {
@@ -171,7 +171,7 @@ export interface Group extends Element {
   elements: Element[];
 }
 
-export function makeRect (
+export function makeRect(
   x1: number,
   y1: number,
   x2: number,
@@ -181,7 +181,7 @@ export function makeRect (
   return { type: "rect", x1, x2, y1, y2, style };
 }
 
-export function makeCircle (
+export function makeCircle(
   cx: number,
   cy: number,
   r: number,
@@ -190,7 +190,7 @@ export function makeCircle (
   return { type: "circle", cx, cy, r, style };
 }
 
-export function makeEllipse (
+export function makeEllipse(
   x1: number,
   y1: number,
   x2: number,
@@ -200,11 +200,11 @@ export function makeEllipse (
   return { type: "ellipse", x1, x2, y1, y2, style };
 }
 
-export function makeGroup (elements: Element[]): Group {
+export function makeGroup(elements: Element[]): Group {
   return { type: "group", elements, transform: { x: 0, y: 0, angle: 0 } };
 }
 
-export function makeLine (
+export function makeLine(
   x1: number,
   y1: number,
   x2: number,
@@ -214,11 +214,11 @@ export function makeLine (
   return { type: "line", x1, x2, y1, y2, style };
 }
 
-export function makePolygon (points: Point[], style?: Style): Polygon {
+export function makePolygon(points: Point[], style?: Style): Polygon {
   return { type: "polygon", points, style };
 }
 
-export function makeText (
+export function makeText(
   cx: number,
   cy: number,
   text: string,
@@ -235,13 +235,13 @@ export class PathMaker {
   public currentX: number;
   public currentY: number;
 
-  public moveTo (x: number, y: number) {
+  public moveTo(x: number, y: number) {
     this.path.cmds.push({ cmd: "M", args: [x, y] });
   }
-  public lineTo (x: number, y: number) {
+  public lineTo(x: number, y: number) {
     this.path.cmds.push({ cmd: "L", args: [x, y] });
   }
-  public cubicBezierCurveTo (
+  public cubicBezierCurveTo(
     c1x: number,
     c1y: number,
     c2x: number,
@@ -251,10 +251,10 @@ export class PathMaker {
   ) {
     this.path.cmds.push({ cmd: "C", args: [c1x, c1y, c2x, c2y, x, y] });
   }
-  public quadraticBezierCurveTo (cx: number, cy: number, x: number, y: number) {
+  public quadraticBezierCurveTo(cx: number, cy: number, x: number, y: number) {
     this.path.cmds.push({ cmd: "Q", args: [cx, cy, x, y] });
   }
-  public arcTo (
+  public arcTo(
     rx: number,
     ry: number,
     xAxisRotation: number,
@@ -270,7 +270,7 @@ export class PathMaker {
   }
 
   /** Compose a Archimedean spiral with r = a + b theta, theta from thetaMin to thetaMax */
-  public archimedeanSpiral (
+  public archimedeanSpiral(
     cx: number,
     cy: number,
     a: number,
@@ -326,7 +326,7 @@ export class PathMaker {
   //     }
   // }
 
-  public polarLineTo (
+  public polarLineTo(
     cx: number,
     cy: number,
     angle1: number,
@@ -387,27 +387,27 @@ export class PathMaker {
     }
   }
 
-  public closePath () {
+  public closePath() {
     this.path.cmds.push({ cmd: "Z", args: [] });
   }
 }
 
-export function makePath (style?: Style) {
+export function makePath(style?: Style) {
   const maker = new PathMaker();
   maker.path.style = style;
   return maker;
 }
 
-export function translation (x: number = 0, y: number = 0): RigidTransform {
+export function translation(x: number = 0, y: number = 0): RigidTransform {
   return { x, y, angle: 0 };
 }
 
-export function rotation (angle: number): RigidTransform {
+export function rotation(angle: number): RigidTransform {
   return { x: 0, y: 0, angle };
 }
 
 /** Concat two transforms, f(p) := a(b(p))  */
-export function concatTransform (a: RigidTransform, b: RigidTransform) {
+export function concatTransform(a: RigidTransform, b: RigidTransform) {
   const theta = (a.angle / 180) * Math.PI;
   const cos = Math.cos(theta);
   const sin = Math.sin(theta);
@@ -418,7 +418,7 @@ export function concatTransform (a: RigidTransform, b: RigidTransform) {
   };
 }
 
-export function transform (transform: RigidTransform, a: Point): Point {
+export function transform(transform: RigidTransform, a: Point): Point {
   const theta = (transform.angle / 180) * Math.PI;
   const cos = Math.cos(theta);
   const sin = Math.sin(theta);
@@ -428,7 +428,7 @@ export function transform (transform: RigidTransform, a: Point): Point {
   };
 }
 
-export function transformDirection (transform: RigidTransform, a: Point): Point {
+export function transformDirection(transform: RigidTransform, a: Point): Point {
   const theta = (transform.angle / 180) * Math.PI;
   const cos = Math.cos(theta);
   const sin = Math.sin(theta);
