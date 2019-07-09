@@ -7,7 +7,8 @@ import {
   Color,
   shallowClone,
   getColorConverter,
-  uniqueID
+  uniqueID,
+  markID
 } from "../../core";
 import { toSVGNumber } from "../utils";
 import {
@@ -257,7 +258,7 @@ export function renderGraphicalElementSVG(
         <rect
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -276,7 +277,7 @@ export function renderGraphicalElementSVG(
         <circle
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -294,7 +295,7 @@ export function renderGraphicalElementSVG(
         <ellipse
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -313,7 +314,7 @@ export function renderGraphicalElementSVG(
         <line
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -332,7 +333,7 @@ export function renderGraphicalElementSVG(
         <polygon
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -351,7 +352,7 @@ export function renderGraphicalElementSVG(
         <path
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
@@ -385,7 +386,7 @@ export function renderGraphicalElementSVG(
         const e1 = (
           <text
             {...mouseEvents}
-            id={uniqueID()}
+            id={markID()}
             className={
               (options.className || "") + (element["data-datum"] && " mark")
             }
@@ -401,7 +402,7 @@ export function renderGraphicalElementSVG(
         const e2 = (
           <text
             {...mouseEvents}
-            id={uniqueID()}
+            id={markID()}
             className={
               (options.className || "") + (element["data-datum"] && " mark")
             }
@@ -424,7 +425,7 @@ export function renderGraphicalElementSVG(
           <text
             key={options.key}
             {...mouseEvents}
-            id={uniqueID()}
+            id={markID()}
             className={
               (options.className || "") + (element["data-datum"] && " mark")
             }
@@ -453,7 +454,7 @@ export function renderGraphicalElementSVG(
         <image
           key={options.key}
           {...mouseEvents}
-          id={uniqueID()}
+          id={markID()}
           className={
             (options.className || "") + (element["data-datum"] && " mark")
           }
