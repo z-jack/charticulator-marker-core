@@ -38,8 +38,11 @@ export function uniqueID (): string {
 }
 
 let pointer = 1;
-export function markID (): string {
-  return 'mark' + pointer++;
+export function markID (datum: string): string {
+  if (!datum) {
+    return null
+  }
+  return "mark" + pointer++;
 }
 
 export function resetMarkID () {

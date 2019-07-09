@@ -2,7 +2,13 @@
 // Licensed under the MIT license.
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { Dataset, Graphics, Prototypes, Specification, resetMarkID } from "../../../core";
+import {
+  Dataset,
+  Graphics,
+  Prototypes,
+  Specification,
+  resetMarkID
+} from "../../../core";
 import {
   GraphicalElementDisplay,
   renderGraphicalElementSVG
@@ -15,8 +21,8 @@ export interface ChartDisplayViewProps {
 export class ChartDisplayView extends React.Component<
   ChartDisplayViewProps,
   {}
-  > {
-  public render () {
+> {
+  public render() {
     const chartState = this.props.manager.chartState;
     const width = chartState.attributes.width as number;
     const height = chartState.attributes.height as number;
@@ -45,7 +51,7 @@ export class ChartDisplayView extends React.Component<
   }
 }
 
-export function renderChartToString (
+export function renderChartToString(
   dataset: Dataset.Dataset,
   chart: Specification.Chart,
   chartState: Specification.ChartState
@@ -54,7 +60,7 @@ export function renderChartToString (
   return ReactDOMServer.renderToString(<ChartDisplayView manager={manager} />);
 }
 
-export function renderChartToLocalString (
+export function renderChartToLocalString(
   dataset: Dataset.Dataset,
   chart: Specification.Chart,
   chartState: Specification.ChartState

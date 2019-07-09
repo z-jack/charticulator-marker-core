@@ -14,7 +14,7 @@ import * as Specification from "../../specification";
 import { CartesianCoordinates, CoordinateSystem } from "../coordinate_system";
 import { Element, Group, makeGroup } from "../elements";
 
-export function facetRows(
+export function facetRows (
   rows: Dataset.Row[],
   indices: number[],
   columns?: string[]
@@ -47,7 +47,7 @@ export class ChartRenderer {
    * Render marks in a glyph
    * @returns an array of groups with the same size as glyph.marks
    */
-  private renderGlyphMarks(
+  private renderGlyphMarks (
     plotSegment: Specification.PlotSegment,
     plotSegmentState: Specification.PlotSegmentState,
     coordinateSystem: CoordinateSystem,
@@ -93,7 +93,7 @@ export class ChartRenderer {
     });
   }
 
-  private renderChart(
+  private renderChart (
     dataset: Dataset.Dataset,
     chart: Specification.Chart,
     chartState: Specification.ChartState
@@ -151,6 +151,7 @@ export class ChartRenderer {
         const glyphElements = transpose(glyphArrays).map(x => makeGroup(x));
         const gGlyphs = makeGroup(glyphElements);
         gGlyphs.transform = coordinateSystem.getBaseTransform();
+        gGlyphs['data-datum'] = '#chartContent'
         const gElement = makeGroup([]);
         const g = plotSegmentClass.getPlotSegmentGraphics(
           gGlyphs,
@@ -185,7 +186,7 @@ export class ChartRenderer {
     return makeGroup(graphics);
   }
 
-  public render(): Group {
+  public render (): Group {
     return this.renderChart(
       this.manager.dataset,
       this.manager.chart,
