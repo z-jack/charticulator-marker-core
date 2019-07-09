@@ -151,7 +151,7 @@ export class ChartRenderer {
         const glyphElements = transpose(glyphArrays).map(x => makeGroup(x));
         const gGlyphs = makeGroup(glyphElements);
         gGlyphs.transform = coordinateSystem.getBaseTransform();
-        gGlyphs['data-datum'] = '#chartContent'
+        gGlyphs["data-datum"] = "chartContent";
         const gElement = makeGroup([]);
         const g = plotSegmentClass.getPlotSegmentGraphics(
           gGlyphs,

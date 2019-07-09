@@ -260,7 +260,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           x={Math.min(rect.x1, rect.x2)}
@@ -279,7 +279,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           cx={circle.cx}
@@ -297,7 +297,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           cx={(ellipse.x1 + ellipse.x2) / 2}
@@ -316,7 +316,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           x1={line.x1}
@@ -335,7 +335,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           points={polygon.points
@@ -354,7 +354,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           d={d}
@@ -388,7 +388,7 @@ export function renderGraphicalElementSVG (
             {...mouseEvents}
             id={markID(element["data-datum"])}
             className={
-              (options.className || "") + (element["data-datum"] && " mark")
+              [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
             }
             style={style2}
             x={text.cx}
@@ -404,7 +404,7 @@ export function renderGraphicalElementSVG (
             {...mouseEvents}
             id={markID(element["data-datum"])}
             className={
-              (options.className || "") + (element["data-datum"] && " mark")
+              [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
             }
             style={style}
             x={text.cx}
@@ -427,7 +427,7 @@ export function renderGraphicalElementSVG (
             {...mouseEvents}
             id={markID(element["data-datum"])}
             className={
-              (options.className || "") + (element["data-datum"] && " mark")
+              [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
             }
             style={style}
             x={text.cx}
@@ -456,7 +456,7 @@ export function renderGraphicalElementSVG (
           {...mouseEvents}
           id={markID(element["data-datum"])}
           className={
-            (options.className || "") + (element["data-datum"] && " mark")
+            [...([options.className] || []), ...(element["data-datum"] ? ["mark"] : [])].join(' ')
           }
           style={style}
           preserveAspectRatio={preserveAspectRatio}
@@ -551,7 +551,7 @@ export function renderGraphicalElementSVG (
                 ? group.style.opacity
                 : 1
           }}
-          id={element['data-datum'] || null}
+          id={element["data-datum"] || null}
           {...mouseEvents}
         >
           {group.elements.map((x, index) => {

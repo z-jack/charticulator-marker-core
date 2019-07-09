@@ -65,7 +65,6 @@ export function renderChartToLocalString(
   chart: Specification.Chart,
   chartState: Specification.ChartState
 ): Promise<string> {
-  resetMarkID();
   const manager = new Prototypes.ChartStateManager(chart, dataset, chartState);
   const width = chartState.attributes.width as number;
   const height = chartState.attributes.height as number;
@@ -97,6 +96,7 @@ export function renderChartToLocalString(
       return url;
     }
   });
+  resetMarkID();
   return Promise.all(allTasks).then(() => {
     return ReactDOMServer.renderToString(
       <svg
