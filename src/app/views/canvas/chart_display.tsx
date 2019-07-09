@@ -100,6 +100,7 @@ export function renderChartToLocalString(
   return Promise.all(allTasks).then(() => {
     return ReactDOMServer.renderToString(
       <svg
+        id="visChart"
         x={0}
         y={0}
         width={width}
