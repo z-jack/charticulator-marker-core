@@ -318,7 +318,7 @@ export class CategoricalLegendClass extends LegendClass {
       const types = ["fill", "stroke"];
       types.forEach((t: string) => {
         if (!legendBind[t]) {
-          return
+          return;
         }
         if (typeof legendBind[t] === "string") {
           color.push(legendBind[t] as string);
@@ -326,6 +326,11 @@ export class CategoricalLegendClass extends LegendClass {
           color = [...color, ...legendBind[t]];
         }
       });
+      if (color.length == 1) {
+        legendBind.color = color[0]
+      } else {
+        legendBind.color = color
+      }
     }
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -421,7 +426,7 @@ export class NumericalColorLegendClass extends LegendClass {
       const types = ["fill", "stroke"];
       types.forEach((t: string) => {
         if (!legendBind[t]) {
-          return
+          return;
         }
         if (typeof legendBind[t] === "string") {
           color.push(legendBind[t] as string);
@@ -429,6 +434,11 @@ export class NumericalColorLegendClass extends LegendClass {
           color = [...color, ...legendBind[t]];
         }
       });
+      if (color.length == 1) {
+        legendBind.color = color[0]
+      } else {
+        legendBind.color = color
+      }
     }
     const range = scale[0].properties
       .range as Specification.Types.ColorGradient;
@@ -623,7 +633,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
       const types = ["fill", "stroke"];
       types.forEach((t: string) => {
         if (!legendBind[t]) {
-          return
+          return;
         }
         if (typeof legendBind[t] === "string") {
           color.push(legendBind[t] as string);
@@ -631,6 +641,11 @@ export class NumericalNumberLegendClass extends ChartElementClass<
           color = [...color, ...legendBind[t]];
         }
       });
+      if (color.length == 1) {
+        legendBind.color = color[0]
+      } else {
+        legendBind.color = color
+      }
     }
 
     const rangeMin = scale[1].attributes.rangeMin as number;
