@@ -91,7 +91,7 @@ export let curveTerminology: Region2DConfiguration["terminology"] = {
 export class CurvePlotSegment extends PlotSegmentClass<
   CurveProperties,
   CurveAttributes
-> {
+  > {
   public static classID = "plot-segment.curve";
   public static type = "plot-segment";
 
@@ -207,7 +207,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     }
   };
 
-  public initializeState(): void {
+  public initializeState (): void {
     const attrs = this.state.attributes;
     attrs.tangent1 = 0;
     attrs.tangent2 = 360;
@@ -223,7 +223,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     attrs.gapY = 4;
   }
 
-  public createBuilder(
+  public createBuilder (
     solver?: ConstraintSolver,
     context?: BuildConstraintsContext
   ) {
@@ -246,7 +246,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     return builder;
   }
 
-  public getCurveArcLength() {
+  public getCurveArcLength () {
     return new Graphics.MultiCurveParametrization(
       this.object.properties.curve.map(
         c => new Graphics.BezierCurveParameterization(c[0], c[1], c[2], c[3])
@@ -254,7 +254,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     ).getLength();
   }
 
-  public buildConstraints(
+  public buildConstraints (
     solver: ConstraintSolver,
     context: BuildConstraintsContext
   ): void {
@@ -293,7 +293,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     );
   }
 
-  public buildGlyphConstraints(
+  public buildGlyphConstraints (
     solver: ConstraintSolver,
     context: BuildConstraintsContext
   ): void {
@@ -301,7 +301,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     builder.build();
   }
 
-  public getBoundingBox(): BoundingBox.Description {
+  public getBoundingBox (): BoundingBox.Description {
     const attrs = this.state.attributes;
     const { x1, x2, y1, y2 } = attrs;
     return {
@@ -314,7 +314,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     } as BoundingBox.Rectangle;
   }
 
-  public getSnappingGuides(): SnappingGuides.Description[] {
+  public getSnappingGuides (): SnappingGuides.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return [
@@ -325,7 +325,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getGraphics(): Graphics.Group {
+  public getGraphics (): Graphics.Group {
     const { tangent1, tangent2, normal1, normal2 } = this.state.attributes;
 
     const g = Graphics.makeGroup([]);
@@ -333,14 +333,16 @@ export class CurvePlotSegment extends PlotSegmentClass<
     const cs = this.getCoordinateSystem();
 
     if (props.xData && props.xData.visible) {
+      const axis = new AxisRenderer()
+        .setAxisDataBinding(props.xData, tangent1, tangent2, false, false)
+        .renderCurve(
+          cs,
+          props.xData.side == "opposite" ? normal2 : normal1,
+          props.xData.side == "opposite" ? -1 : 1
+        )
+      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'tangent', 'position': props.xData.expression })
       g.elements.push(
-        new AxisRenderer()
-          .setAxisDataBinding(props.xData, tangent1, tangent2, false, false)
-          .renderCurve(
-            cs,
-            props.xData.side == "opposite" ? normal2 : normal1,
-            props.xData.side == "opposite" ? -1 : 1
-          )
+        axis
       );
     }
     if (props.yData && props.yData.visible) {
@@ -349,21 +351,23 @@ export class CurvePlotSegment extends PlotSegmentClass<
         0
       );
       tr = Graphics.concatTransform(cs.getBaseTransform(), tr);
+      const axis = new AxisRenderer()
+        .setAxisDataBinding(props.yData, normal1, normal2, false, true)
+        .renderLine(
+          tr.x,
+          tr.y,
+          tr.angle + 90,
+          props.yData.side == "opposite" ? 1 : -1
+        )
+      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'normal', 'position': props.yData.expression })
       g.elements.push(
-        new AxisRenderer()
-          .setAxisDataBinding(props.yData, normal1, normal2, false, true)
-          .renderLine(
-            tr.x,
-            tr.y,
-            tr.angle + 90,
-            props.yData.side == "opposite" ? 1 : -1
-          )
+        axis
       );
     }
     return g;
   }
 
-  public getCoordinateSystem(): Graphics.CoordinateSystem {
+  public getCoordinateSystem (): Graphics.CoordinateSystem {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     const cx = (x1 + x2) / 2,
@@ -385,7 +389,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     );
   }
 
-  public getDropZones(): DropZones.Description[] {
+  public getDropZones (): DropZones.Description[] {
     const attrs = this.state.attributes as CurveAttributes;
     const { x1, y1, x2, y2 } = attrs;
     const zones: DropZones.Description[] = [];
@@ -430,7 +434,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     return zones;
   }
 
-  public getAxisModes(): [CurveAxisMode, CurveAxisMode] {
+  public getAxisModes (): [CurveAxisMode, CurveAxisMode] {
     const props = this.object.properties;
     return [
       props.xData ? props.xData.type : "null",
@@ -438,7 +442,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getHandles(): Handles.Description[] {
+  public getHandles (): Handles.Description[] {
     const attrs = this.state.attributes;
     const props = this.object.properties;
     const rows = this.parent.dataflow.getTable(this.object.table).rows;
@@ -523,7 +527,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     return h;
   }
 
-  public getPopupEditor(manager: Controls.WidgetManager): Controls.PopupEditor {
+  public getPopupEditor (manager: Controls.WidgetManager): Controls.PopupEditor {
     const builder = this.createBuilder();
     const widgets = builder.buildPopupWidgets(manager);
     if (widgets.length == 0) {
@@ -537,7 +541,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     };
   }
 
-  public getAttributePanelWidgets(
+  public getAttributePanelWidgets (
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const builder = this.createBuilder();
@@ -563,7 +567,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getTemplateParameters(): TemplateParameters {
+  public getTemplateParameters (): TemplateParameters {
     const r: Specification.Template.Inference[] = [];
     if (this.object.properties.xData) {
       r.push(buildAxisInference(this.object, "xData"));

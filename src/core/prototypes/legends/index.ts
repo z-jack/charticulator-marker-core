@@ -71,13 +71,13 @@ export abstract class LegendClass extends ChartElementClass {
     }
   };
 
-  public initializeState(): void {
+  public initializeState (): void {
     const attrs = this.state.attributes;
     attrs.x = 0;
     attrs.y = 0;
   }
 
-  public getLayoutBox(): { x1: number; y1: number; x2: number; y2: number } {
+  public getLayoutBox (): { x1: number; y1: number; x2: number; y2: number } {
     const { x, y } = this.state.attributes;
     const [width, height] = this.getLegendSize();
     let x1: number, y1: number, x2: number, y2: number;
@@ -112,7 +112,7 @@ export abstract class LegendClass extends ChartElementClass {
     return { x1, y1, x2, y2 };
   }
 
-  public getBoundingBox(): BoundingBox.Description {
+  public getBoundingBox (): BoundingBox.Description {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = this.getLayoutBox();
     return {
@@ -125,7 +125,7 @@ export abstract class LegendClass extends ChartElementClass {
     } as BoundingBox.Rectangle;
   }
 
-  public getHandles(): Handles.Description[] {
+  public getHandles (): Handles.Description[] {
     const attrs = this.state.attributes;
     const { x, y } = attrs;
     return [
@@ -141,7 +141,7 @@ export abstract class LegendClass extends ChartElementClass {
     ];
   }
 
-  public getScale(): [Specification.Scale, Specification.ScaleState] {
+  public getScale (): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
     const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
     if (scaleIndex >= 0) {
@@ -154,11 +154,11 @@ export abstract class LegendClass extends ChartElementClass {
     }
   }
 
-  public getLegendSize(): [number, number] {
+  public getLegendSize (): [number, number] {
     return [10, 10];
   }
 
-  public getAttributePanelWidgets(
+  public getAttributePanelWidgets (
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const props = this.object.properties;
@@ -214,7 +214,7 @@ export class CategoricalLegendClass extends LegendClass {
 
   private textMeasure = new Graphics.TextMeasurer();
 
-  public getLegendItems(): CategoricalLegendItem[] {
+  public getLegendItems (): CategoricalLegendItem[] {
     const scale = this.getScale();
     if (scale) {
       const [scaleObject, scaleState] = scale;
@@ -254,16 +254,16 @@ export class CategoricalLegendClass extends LegendClass {
     }
   }
 
-  public getLineHeight() {
+  public getLineHeight () {
     return this.object.properties.fontSize + 10;
   }
 
-  public getLegendSize(): [number, number] {
+  public getLegendSize (): [number, number] {
     const items = this.getLegendItems();
     return [100, items.length * this.getLineHeight()];
   }
 
-  public getGraphics(): Graphics.Element {
+  public getGraphics (): Graphics.Element {
     const fontFamily = this.object.properties.fontFamily;
     const fontSize = this.object.properties.fontSize;
     const lineHeight = this.getLineHeight();
@@ -272,6 +272,27 @@ export class CategoricalLegendClass extends LegendClass {
 
     const g = Graphics.makeGroup([]);
     const items = this.getLegendItems();
+    const scaleIdentity = this.object.properties.scale
+    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    this.parent.manager.chart.glyphs.forEach(glyph => {
+      glyph.marks.forEach(mark => {
+        Object.keys(mark.mappings).forEach(key => {
+          if (mark.mappings[key].type == 'scale') {
+            const mapping = mark.mappings[key] as Specification.ScaleMapping;
+            if (mapping.scale == scaleIdentity) {
+              if (legendBind[key]) {
+                if (typeof legendBind[key] === 'string') {
+                  legendBind[key] = [legendBind[key] as string]
+                }
+                (legendBind[key] as string[]).push(mapping.expression)
+              } else {
+                legendBind[key] = mapping.expression
+              }
+            }
+          }
+        })
+      })
+    })
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const metrics = this.textMeasure.measure(item.label);
@@ -313,6 +334,7 @@ export class CategoricalLegendClass extends LegendClass {
     }
     const { x1, y1 } = this.getLayoutBox();
     g.transform = { x: x1, y: y1, angle: 0 };
+    g['data-datum'] = JSON.stringify(legendBind)
     return g;
   }
 }
@@ -321,11 +343,11 @@ export class NumericalColorLegendClass extends LegendClass {
   public static classID: string = "legend.numerical-color";
   public static type: string = "legend";
 
-  public getLegendSize(): [number, number] {
+  public getLegendSize (): [number, number] {
     return [100, 100];
   }
 
-  public getGraphics(): Graphics.Element {
+  public getGraphics (): Graphics.Element {
     const height = this.getLegendSize()[1];
     const marginLeft = 5;
     const gradientWidth = 12;
@@ -335,6 +357,27 @@ export class NumericalColorLegendClass extends LegendClass {
       return null;
     }
 
+    const scaleIdentity = this.object.properties.scale
+    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    this.parent.manager.chart.glyphs.forEach(glyph => {
+      glyph.marks.forEach(mark => {
+        Object.keys(mark.mappings).forEach(key => {
+          if (mark.mappings[key].type == 'scale') {
+            const mapping = mark.mappings[key] as Specification.ScaleMapping;
+            if (mapping.scale == scaleIdentity) {
+              if (legendBind[key]) {
+                if (typeof legendBind[key] === 'string') {
+                  legendBind[key] = [legendBind[key] as string]
+                }
+                (legendBind[key] as string[]).push(mapping.expression)
+              } else {
+                legendBind[key] = mapping.expression
+              }
+            }
+          }
+        })
+      })
+    })
     const range = scale[0].properties
       .range as Specification.Types.ColorGradient;
     const domainMin = scale[0].properties.domainMin as number;
@@ -369,6 +412,7 @@ export class NumericalColorLegendClass extends LegendClass {
 
     const { x1, y1 } = this.getLayoutBox();
     g.transform = { x: x1, y: y1, angle: 0 };
+    g['data-datum'] = JSON.stringify(legendBind)
     return g;
   }
 }
@@ -393,7 +437,7 @@ export interface NumericalNumberLegendProperties
 export class NumericalNumberLegendClass extends ChartElementClass<
   NumericalNumberLegendProperties,
   NumericalNumberLegendAttributes
-> {
+  > {
   public static classID: string = "legend.numerical-number";
   public static type: string = "legend";
 
@@ -431,7 +475,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     }
   };
 
-  public initializeState(): void {
+  public initializeState (): void {
     const attrs = this.state.attributes;
     attrs.x1 = 0;
     attrs.y1 = 0;
@@ -439,7 +483,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     attrs.y2 = 0;
   }
 
-  public getScale(): [Specification.Scale, Specification.ScaleState] {
+  public getScale (): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
     const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
     if (scaleIndex >= 0) {
@@ -452,7 +496,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     }
   }
 
-  public getBoundingBox(): BoundingBox.Description {
+  public getBoundingBox (): BoundingBox.Description {
     return {
       type: "line",
       x1: this.state.attributes.x1,
@@ -462,7 +506,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     } as BoundingBox.Line;
   }
 
-  public getHandles(): Handles.Description[] {
+  public getHandles (): Handles.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return [
@@ -487,7 +531,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     ];
   }
 
-  public getGraphics(): Graphics.Element {
+  public getGraphics (): Graphics.Element {
     const scale = this.getScale();
     if (!scale) {
       return null;
@@ -496,6 +540,28 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     if (!this.object.properties.axis.visible) {
       return null;
     }
+
+    const scaleIdentity = this.object.properties.scale
+    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    this.parent.manager.chart.glyphs.forEach(glyph => {
+      glyph.marks.forEach(mark => {
+        Object.keys(mark.mappings).forEach(key => {
+          if (mark.mappings[key].type == 'scale') {
+            const mapping = mark.mappings[key] as Specification.ScaleMapping;
+            if (mapping.scale == scaleIdentity) {
+              if (legendBind[key]) {
+                if (typeof legendBind[key] === 'string') {
+                  legendBind[key] = [legendBind[key] as string]
+                }
+                (legendBind[key] as string[]).push(mapping.expression)
+              } else {
+                legendBind[key] = mapping.expression
+              }
+            }
+          }
+        })
+      })
+    })
 
     const rangeMin = scale[1].attributes.rangeMin as number;
     const rangeMax = scale[1].attributes.rangeMax as number;
@@ -522,15 +588,18 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     );
     renderer.setStyle(this.object.properties.axis.style);
 
-    return renderer.renderLine(
+    const g = renderer.renderLine(
       this.state.attributes.x1 as number,
       this.state.attributes.y1 as number,
       (Math.atan2(dy, dx) / Math.PI) * 180,
       -1
     );
+
+    g['data-datum'] = JSON.stringify(legendBind)
+    return g;
   }
 
-  public getAttributePanelWidgets(
+  public getAttributePanelWidgets (
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const props = this.object.properties;
@@ -542,7 +611,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
   }
 }
 
-export function registerClasses() {
+export function registerClasses () {
   ObjectClasses.Register(CategoricalLegendClass);
   ObjectClasses.Register(NumericalColorLegendClass);
   ObjectClasses.Register(NumericalNumberLegendClass);

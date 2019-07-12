@@ -86,7 +86,7 @@ export let polarTerminology: Region2DConfiguration["terminology"] = {
 export class PolarPlotSegment extends PlotSegmentClass<
   PolarProperties,
   PolarAttributes
-> {
+  > {
   public static classID = "plot-segment.polar";
   public static type = "plot-segment";
 
@@ -198,7 +198,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     }
   };
 
-  public initializeState(): void {
+  public initializeState (): void {
     const attrs = this.state.attributes;
     attrs.angle1 = 0;
     attrs.angle2 = 360;
@@ -214,7 +214,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     attrs.gapY = 4;
   }
 
-  public createBuilder(
+  public createBuilder (
     solver?: ConstraintSolver,
     context?: BuildConstraintsContext
   ) {
@@ -242,7 +242,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     return builder;
   }
 
-  public buildConstraints(
+  public buildConstraints (
     solver: ConstraintSolver,
     context: BuildConstraintsContext
   ): void {
@@ -296,7 +296,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     }
   }
 
-  public buildGlyphConstraints(
+  public buildGlyphConstraints (
     solver: ConstraintSolver,
     context: BuildConstraintsContext
   ): void {
@@ -304,7 +304,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     builder.build();
   }
 
-  public getBoundingBox(): BoundingBox.Description {
+  public getBoundingBox (): BoundingBox.Description {
     const attrs = this.state.attributes;
     const { x1, x2, y1, y2 } = attrs;
     return {
@@ -317,7 +317,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     } as BoundingBox.Rectangle;
   }
 
-  public getSnappingGuides(): SnappingGuides.Description[] {
+  public getSnappingGuides (): SnappingGuides.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return [
@@ -328,7 +328,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getGraphics(): Graphics.Group {
+  public getGraphics (): Graphics.Group {
     const builder = this.createBuilder();
     const g = Graphics.makeGroup([]);
     const attrs = this.state.attributes;
@@ -343,39 +343,43 @@ export class PolarPlotSegment extends PlotSegmentClass<
     const innerRadius = attrs.radial1;
     const outerRadius = attrs.radial2;
     if (radialData && radialData.visible) {
+      const axis = new AxisRenderer()
+        .setAxisDataBinding(radialData, innerRadius, outerRadius, false, true)
+        .renderLine(
+          cx,
+          cy,
+          90 - (radialData.side == "opposite" ? angleEnd : angleStart),
+          -1
+        )
+      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'radial', 'position': props.yData.expression })
       g.elements.push(
-        new AxisRenderer()
-          .setAxisDataBinding(radialData, innerRadius, outerRadius, false, true)
-          .renderLine(
-            cx,
-            cy,
-            90 - (radialData.side == "opposite" ? angleEnd : angleStart),
-            -1
-          )
+        axis
       );
     }
     if (angularData && angularData.visible) {
+      const axis = new AxisRenderer()
+        .setAxisDataBinding(
+          angularData,
+          angleStart,
+          angleEnd,
+          builder.config.xAxisPrePostGap,
+          false
+        )
+        .renderPolar(
+          cx,
+          cy,
+          angularData.side == "opposite" ? innerRadius : outerRadius,
+          angularData.side == "opposite" ? -1 : 1
+        )
+      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'angular', 'position': props.xData.expression })
       g.elements.push(
-        new AxisRenderer()
-          .setAxisDataBinding(
-            angularData,
-            angleStart,
-            angleEnd,
-            builder.config.xAxisPrePostGap,
-            false
-          )
-          .renderPolar(
-            cx,
-            cy,
-            angularData.side == "opposite" ? innerRadius : outerRadius,
-            angularData.side == "opposite" ? -1 : 1
-          )
+        axis
       );
     }
     return g;
   }
 
-  public getCoordinateSystem(): Graphics.CoordinateSystem {
+  public getCoordinateSystem (): Graphics.CoordinateSystem {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return new Graphics.PolarCoordinates(
@@ -389,7 +393,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     );
   }
 
-  public getDropZones(): DropZones.Description[] {
+  public getDropZones (): DropZones.Description[] {
     const attrs = this.state.attributes as PolarAttributes;
     const { x1, y1, x2, y2, radial1, radial2 } = attrs;
     const cx = (x1 + x2) / 2;
@@ -442,7 +446,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     return zones;
   }
 
-  public getAxisModes(): [PolarAxisMode, PolarAxisMode] {
+  public getAxisModes (): [PolarAxisMode, PolarAxisMode] {
     const props = this.object.properties;
     return [
       props.xData ? props.xData.type : "null",
@@ -450,7 +454,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getHandles(): Handles.Description[] {
+  public getHandles (): Handles.Description[] {
     const attrs = this.state.attributes;
     const props = this.object.properties;
     const rows = this.parent.dataflow.getTable(this.object.table).rows;
@@ -590,7 +594,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getPopupEditor(manager: Controls.WidgetManager): Controls.PopupEditor {
+  public getPopupEditor (manager: Controls.WidgetManager): Controls.PopupEditor {
     const builder = this.createBuilder();
     const widgets = builder.buildPopupWidgets(manager);
     if (widgets.length == 0) {
@@ -605,7 +609,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     };
   }
 
-  public getAttributePanelWidgets(
+  public getAttributePanelWidgets (
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const builder = this.createBuilder();
@@ -642,7 +646,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getTemplateParameters(): TemplateParameters {
+  public getTemplateParameters (): TemplateParameters {
     const r: Specification.Template.Inference[] = [];
     if (this.object.properties.xData) {
       r.push(buildAxisInference(this.object, "xData"));
