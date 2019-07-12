@@ -17,15 +17,15 @@ import {
 } from "../axis";
 import { PlotSegmentClass } from "../plot_segment";
 
-export function getMatches (str: string): string | string[] {
+export function getMatches(str: string): string | string[] {
   const matches = [];
-  const regex = /\(([^\(\)]*)\)/g
+  const regex = /\(([^\(\)]*)\)/g;
   let match;
-  while (match = regex.exec(str)) {
+  while ((match = regex.exec(str))) {
     matches.push(match[1]);
   }
   if (matches.length == 1) {
-    return matches[0]
+    return matches[0];
   }
   return matches;
 }
@@ -137,11 +137,11 @@ export class CrossFitter {
     this.candidates = [];
   }
 
-  public add (src: Variable, dst: Variable) {
+  public add(src: Variable, dst: Variable) {
     return this.addComplex(src, [[1, dst]]);
   }
 
-  public addComplex (
+  public addComplex(
     src: Variable,
     dst: Array<[number, Variable]>,
     dstBias: number = 0
@@ -149,7 +149,7 @@ export class CrossFitter {
     this.candidates.push([src, dst, dstBias]);
   }
 
-  public addConstraint (w: ConstraintStrength) {
+  public addConstraint(w: ConstraintStrength) {
     if (this.candidates.length == 0) {
       return;
     }
@@ -183,7 +183,7 @@ export class DodgingFitters {
     this.yMax = new CrossFitter(solver, "max");
   }
 
-  public addConstraint (w: ConstraintStrength) {
+  public addConstraint(w: ConstraintStrength) {
     this.xMin.addConstraint(w);
     this.xMax.addConstraint(w);
     this.yMin.addConstraint(w);
@@ -224,17 +224,17 @@ export class Region2DConstraintBuilder {
     this.terminology = config.terminology;
   }
 
-  public getTableContext (): DataflowTable {
+  public getTableContext(): DataflowTable {
     return this.plotSegment.parent.dataflow.getTable(
       this.plotSegment.object.table
     );
   }
 
-  public getExpression (expr: string): Expression.Expression {
+  public getExpression(expr: string): Expression.Expression {
     return this.plotSegment.parent.dataflow.cache.parse(expr);
   }
 
-  public groupMarksByCategories (
+  public groupMarksByCategories(
     categories: Array<{ expression: string; categories: string[] }>
   ): number[][] {
     // Prepare categories
@@ -283,7 +283,7 @@ export class Region2DConstraintBuilder {
     return result;
   }
 
-  public orderMarkGroups (groups: SublayoutGroup[]) {
+  public orderMarkGroups(groups: SublayoutGroup[]) {
     const order = this.plotSegment.object.properties.sublayout.order;
     const dateRowIndices = this.plotSegment.state.dataRowIndices;
     const table = this.getTableContext();
@@ -318,7 +318,7 @@ export class Region2DConstraintBuilder {
   }
 
   /** Make sure gapX correctly correspond to gapXRatio */
-  public gapX (length: number, ratio: number) {
+  public gapX(length: number, ratio: number) {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -339,7 +339,7 @@ export class Region2DConstraintBuilder {
   }
 
   /** Make sure gapY correctly correspond to gapYRatio */
-  public gapY (length: number, ratio: number) {
+  public gapY(length: number, ratio: number) {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -359,7 +359,7 @@ export class Region2DConstraintBuilder {
   }
 
   /** Map elements according to numerical/categorical mapping */
-  public numericalMapping (axis: "x" | "y"): void {
+  public numericalMapping(axis: "x" | "y"): void {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -405,7 +405,7 @@ export class Region2DConstraintBuilder {
               solver.addLinear(
                 ConstraintStrength.HARD,
                 (data.categories.length - i - 0.5) * props.marginX1 -
-                (i + 0.5) * props.marginX2,
+                  (i + 0.5) * props.marginX2,
                 [
                   [i + 0.5, x2],
                   [data.categories.length - i - 0.5, x1],
@@ -458,7 +458,7 @@ export class Region2DConstraintBuilder {
             solver.addLinear(
               ConstraintStrength.HARD,
               (data.categories.length - i - 0.5) * props.marginY1 -
-              (i + 0.5) * props.marginY2,
+                (i + 0.5) * props.marginY2,
               [
                 [i + 0.5, y2],
                 [data.categories.length - i - 0.5, y1],
@@ -473,7 +473,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public groupMarksByCategoricalMapping (axis: "x" | "y" | "xy") {
+  public groupMarksByCategoricalMapping(axis: "x" | "y" | "xy") {
     const props = this.plotSegment.object.properties;
     switch (axis) {
       case "x": {
@@ -499,7 +499,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public categoricalMapping (
+  public categoricalMapping(
     axis: "x" | "y" | "xy",
     sublayoutContext: SublayoutContext
   ): void {
@@ -698,7 +698,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public categoricalHandles (
+  public categoricalHandles(
     axis: "x" | "y" | "xy",
     sublayout: boolean
   ): Region2DHandleDescription[] {
@@ -782,7 +782,7 @@ export class Region2DConstraintBuilder {
     return handles;
   }
 
-  public stacking (axis: "x" | "y"): void {
+  public stacking(axis: "x" | "y"): void {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -946,7 +946,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public fitGroups (groups: SublayoutGroup[], axis: "x" | "y" | "xy") {
+  public fitGroups(groups: SublayoutGroup[], axis: "x" | "y" | "xy") {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -1028,7 +1028,7 @@ export class Region2DConstraintBuilder {
     fitters.addConstraint(ConstraintStrength.MEDIUM);
   }
 
-  public applySublayout (
+  public applySublayout(
     groups: SublayoutGroup[],
     axis: "x" | "y" | "xy",
     context: SublayoutContext
@@ -1064,7 +1064,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public sublayoutDodging (
+  public sublayoutDodging(
     groups: SublayoutGroup[],
     direction: "x" | "y",
     enablePrePostGap: boolean
@@ -1316,7 +1316,7 @@ export class Region2DConstraintBuilder {
     fitters.addConstraint(ConstraintStrength.MEDIUM);
   }
 
-  public getGlyphPreSolveAttributes (rowIndices: number[]) {
+  public getGlyphPreSolveAttributes(rowIndices: number[]) {
     const attrs = this.solverContext.getGlyphAttributes(
       this.plotSegment.object.glyph,
       this.plotSegment.object.table,
@@ -1325,7 +1325,7 @@ export class Region2DConstraintBuilder {
     return attrs;
   }
 
-  public sublayoutGrid (groups: SublayoutGroup[], directionOverride?: string) {
+  public sublayoutGrid(groups: SublayoutGroup[], directionOverride?: string) {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -1524,7 +1524,7 @@ export class Region2DConstraintBuilder {
     yMaxFitter.addConstraint(ConstraintStrength.MEDIUM);
   }
 
-  public sublayoutHandles (
+  public sublayoutHandles(
     groups: Array<{
       group: number[];
       x1: number;
@@ -1618,7 +1618,7 @@ export class Region2DConstraintBuilder {
     return handles;
   }
 
-  public sublayoutPacking (groups: SublayoutGroup[], axisOnly?: "x" | "y") {
+  public sublayoutPacking(groups: SublayoutGroup[], axisOnly?: "x" | "y") {
     const solver = this.solver;
     const state = this.plotSegment.state;
 
@@ -1685,7 +1685,7 @@ export class Region2DConstraintBuilder {
     });
   }
 
-  public getHandles (): Region2DHandleDescription[] {
+  public getHandles(): Region2DHandleDescription[] {
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
@@ -1772,7 +1772,7 @@ export class Region2DConstraintBuilder {
     return handles;
   }
 
-  public build (): void {
+  public build(): void {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const attrs = state.attributes;
@@ -1988,7 +1988,7 @@ export class Region2DConstraintBuilder {
     );
   }
 
-  public applicableSublayoutOptions () {
+  public applicableSublayoutOptions() {
     const overlapOption = {
       value: "overlap",
       label: this.terminology.overlap,
@@ -2032,7 +2032,7 @@ export class Region2DConstraintBuilder {
     return [overlapOption, packingOption];
   }
 
-  public isSublayoutApplicable () {
+  public isSublayoutApplicable() {
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
     const yMode = props.yData ? props.yData.type : "null";
@@ -2044,7 +2044,7 @@ export class Region2DConstraintBuilder {
     );
   }
 
-  public buildSublayoutWidgets (m: Controls.WidgetManager) {
+  public buildSublayoutWidgets(m: Controls.WidgetManager) {
     const extra: Controls.Widget[] = [];
     const props = this.plotSegment.object.properties;
     const type = props.sublayout.type;
@@ -2064,25 +2064,25 @@ export class Region2DConstraintBuilder {
             isXFixed
               ? null
               : m.inputSelect(
-                { property: "sublayout", field: ["align", "x"] },
-                {
-                  type: "radio",
-                  options: ["start", "middle", "end"],
-                  icons: ["align/left", "align/x-middle", "align/right"],
-                  labels: ["Left", "Middle", "Right"]
-                }
-              ),
+                  { property: "sublayout", field: ["align", "x"] },
+                  {
+                    type: "radio",
+                    options: ["start", "middle", "end"],
+                    icons: ["align/left", "align/x-middle", "align/right"],
+                    labels: ["Left", "Middle", "Right"]
+                  }
+                ),
             isYFixed
               ? null
               : m.inputSelect(
-                { property: "sublayout", field: ["align", "y"] },
-                {
-                  type: "radio",
-                  options: ["start", "middle", "end"],
-                  icons: ["align/bottom", "align/y-middle", "align/top"],
-                  labels: ["Bottom", "Middle", "Top"]
-                }
-              )
+                  { property: "sublayout", field: ["align", "y"] },
+                  {
+                    type: "radio",
+                    options: ["start", "middle", "end"],
+                    icons: ["align/bottom", "align/y-middle", "align/top"],
+                    labels: ["Bottom", "Middle", "Top"]
+                  }
+                )
           )
         )
       );
@@ -2187,7 +2187,7 @@ export class Region2DConstraintBuilder {
     ];
   }
 
-  public buildAxisWidgets (
+  public buildAxisWidgets(
     m: Controls.WidgetManager,
     axisName: string,
     axis: "x" | "y"
@@ -2198,7 +2198,7 @@ export class Region2DConstraintBuilder {
     return buildAxisWidgets(data, axisProperty, m, axisName);
   }
 
-  public buildPanelWidgets (m: Controls.WidgetManager): Controls.Widget[] {
+  public buildPanelWidgets(m: Controls.WidgetManager): Controls.Widget[] {
     if (this.isSublayoutApplicable()) {
       return [
         ...this.buildAxisWidgets(m, this.terminology.xAxis, "x"),
@@ -2213,7 +2213,7 @@ export class Region2DConstraintBuilder {
     }
   }
 
-  public buildPopupWidgets (m: Controls.WidgetManager): Controls.Widget[] {
+  public buildPopupWidgets(m: Controls.WidgetManager): Controls.Widget[] {
     const props = this.plotSegment.object.properties;
     let sublayout: Controls.Widget[] = [];
 
@@ -2370,9 +2370,9 @@ export class Region2DConstraintBuilder {
         sublayout.push(
           m.label(
             this.terminology.xAxis +
-            " & " +
-            this.terminology.yAxis +
-            ": Stacking"
+              " & " +
+              this.terminology.yAxis +
+              ": Stacking"
           )
         );
       }

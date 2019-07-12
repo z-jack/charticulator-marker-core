@@ -208,15 +208,18 @@ export interface CategoricalLegendItem {
   value: number | Color | boolean;
 }
 
-function getMatches (str: string, alwaysArray: boolean = false): string | string[] {
+function getMatches (
+  str: string,
+  alwaysArray: boolean = false
+): string | string[] {
   const matches = [];
-  const regex = /\(([^\(\)]*)\)/g
+  const regex = /\(([^\(\)]*)\)/g;
   let match;
-  while (match = regex.exec(str)) {
+  while ((match = regex.exec(str))) {
     matches.push(match[1]);
   }
   if (!alwaysArray && matches.length == 1) {
-    return matches[0]
+    return matches[0];
   }
   return matches;
 }
@@ -299,7 +302,9 @@ export class CategoricalLegendClass extends LegendClass {
                 if (typeof legendBind[key] === "string") {
                   legendBind[key] = [legendBind[key] as string];
                 }
-                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
+                legendBind[key] = (legendBind[key] as string[]).concat(
+                  getMatches(mapping.expression, true)
+                );
               } else {
                 legendBind[key] = getMatches(mapping.expression);
               }
@@ -309,15 +314,18 @@ export class CategoricalLegendClass extends LegendClass {
       });
     });
     if (legendBind.fill || legendBind.stroke) {
-      let color: string[] = []
-      const types = ['fill', 'stroke']
+      let color: string[] = [];
+      const types = ["fill", "stroke"];
       types.forEach((t: string) => {
-        if (typeof legendBind[t] === 'string') {
-          color.push(legendBind[t] as string)
-        } else {
-          color = [...color, ...legendBind[t]]
+        if (!legendBind[t]) {
+          return
         }
-      })
+        if (typeof legendBind[t] === "string") {
+          color.push(legendBind[t] as string);
+        } else {
+          color = [...color, ...legendBind[t]];
+        }
+      });
     }
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -397,7 +405,9 @@ export class NumericalColorLegendClass extends LegendClass {
                 if (typeof legendBind[key] === "string") {
                   legendBind[key] = [legendBind[key] as string];
                 }
-                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
+                legendBind[key] = (legendBind[key] as string[]).concat(
+                  getMatches(mapping.expression, true)
+                );
               } else {
                 legendBind[key] = getMatches(mapping.expression);
               }
@@ -406,6 +416,20 @@ export class NumericalColorLegendClass extends LegendClass {
         });
       });
     });
+    if (legendBind.fill || legendBind.stroke) {
+      let color: string[] = [];
+      const types = ["fill", "stroke"];
+      types.forEach((t: string) => {
+        if (!legendBind[t]) {
+          return
+        }
+        if (typeof legendBind[t] === "string") {
+          color.push(legendBind[t] as string);
+        } else {
+          color = [...color, ...legendBind[t]];
+        }
+      });
+    }
     const range = scale[0].properties
       .range as Specification.Types.ColorGradient;
     const domainMin = scale[0].properties.domainMin as number;
@@ -583,7 +607,9 @@ export class NumericalNumberLegendClass extends ChartElementClass<
                 if (typeof legendBind[key] === "string") {
                   legendBind[key] = [legendBind[key] as string];
                 }
-                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
+                legendBind[key] = (legendBind[key] as string[]).concat(
+                  getMatches(mapping.expression, true)
+                );
               } else {
                 legendBind[key] = getMatches(mapping.expression);
               }
@@ -592,6 +618,20 @@ export class NumericalNumberLegendClass extends ChartElementClass<
         });
       });
     });
+    if (legendBind.fill || legendBind.stroke) {
+      let color: string[] = [];
+      const types = ["fill", "stroke"];
+      types.forEach((t: string) => {
+        if (!legendBind[t]) {
+          return
+        }
+        if (typeof legendBind[t] === "string") {
+          color.push(legendBind[t] as string);
+        } else {
+          color = [...color, ...legendBind[t]];
+        }
+      });
+    }
 
     const rangeMin = scale[1].attributes.rangeMin as number;
     const rangeMax = scale[1].attributes.rangeMax as number;

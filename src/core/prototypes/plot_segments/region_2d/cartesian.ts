@@ -31,7 +31,7 @@ export type CartesianAxisMode =
   | "numerical"
   | "categorical";
 
-export interface CartesianProperties extends Region2DProperties { }
+export interface CartesianProperties extends Region2DProperties {}
 
 export interface CartesianAttributes extends Region2DAttributes {
   /** Cartesian plot segment region */
@@ -81,7 +81,7 @@ export let cartesianTerminology: Region2DConfiguration = {
 export class CartesianPlotSegment extends PlotSegmentClass<
   CartesianProperties,
   CartesianAttributes
-  > {
+> {
   public static classID: string = "plot-segment.cartesian";
   public static type: string = "plot-segment";
 
@@ -168,7 +168,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     }
   };
 
-  public initializeState (): void {
+  public initializeState(): void {
     const attrs = this.state.attributes;
     attrs.x1 = -100;
     attrs.x2 = 100;
@@ -180,7 +180,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     attrs.y = attrs.y2;
   }
 
-  public createBuilder (
+  public createBuilder(
     solver?: ConstraintSolver,
     context?: BuildConstraintsContext
   ) {
@@ -197,7 +197,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     return builder;
   }
 
-  public buildGlyphConstraints (
+  public buildGlyphConstraints(
     solver: ConstraintSolver,
     context: BuildConstraintsContext
   ): void {
@@ -205,7 +205,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     builder.build();
   }
 
-  public getBoundingBox (): BoundingBox.Description {
+  public getBoundingBox(): BoundingBox.Description {
     const attrs = this.state.attributes;
     const { x1, x2, y1, y2 } = attrs;
     return {
@@ -218,7 +218,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     } as BoundingBox.Rectangle;
   }
 
-  public getSnappingGuides (): SnappingGuides.Description[] {
+  public getSnappingGuides(): SnappingGuides.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return [
@@ -229,7 +229,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getAttributePanelWidgets (
+  public getAttributePanelWidgets(
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const builder = this.createBuilder();
@@ -239,7 +239,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getPopupEditor (manager: Controls.WidgetManager): Controls.PopupEditor {
+  public getPopupEditor(manager: Controls.WidgetManager): Controls.PopupEditor {
     const builder = this.createBuilder();
     const widgets = builder.buildPopupWidgets(manager);
     if (widgets.length == 0) {
@@ -253,7 +253,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     };
   }
 
-  public getGraphics (manager: ChartStateManager): Graphics.Group {
+  public getGraphics(manager: ChartStateManager): Graphics.Group {
     const g = Graphics.makeGroup([]);
     const attrs = this.state.attributes;
     const props = this.object.properties;
@@ -321,7 +321,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     return g;
   }
 
-  public getDropZones (): DropZones.Description[] {
+  public getDropZones(): DropZones.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     const zones: DropZones.Description[] = [];
@@ -386,7 +386,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     return zones;
   }
 
-  public getAxisModes (): [CartesianAxisMode, CartesianAxisMode] {
+  public getAxisModes(): [CartesianAxisMode, CartesianAxisMode] {
     const props = this.object.properties;
     return [
       props.xData ? props.xData.type : "null",
@@ -394,7 +394,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     ];
   }
 
-  public getHandles (): Handles.Description[] {
+  public getHandles(): Handles.Description[] {
     const attrs = this.state.attributes;
     const { x1, x2, y1, y2 } = attrs;
     const h: Handles.Description[] = [
@@ -490,7 +490,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     return h;
   }
 
-  public getTemplateParameters (): TemplateParameters {
+  public getTemplateParameters(): TemplateParameters {
     const r: Specification.Template.Inference[] = [];
     if (this.object.properties.xData) {
       r.push(buildAxisInference(this.object, "xData"));
