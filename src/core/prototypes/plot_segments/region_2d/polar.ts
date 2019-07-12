@@ -19,7 +19,8 @@ import {
   Region2DAttributes,
   Region2DConfiguration,
   Region2DConstraintBuilder,
-  Region2DProperties
+  Region2DProperties,
+  getMatches
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
 
@@ -350,11 +351,13 @@ export class PolarPlotSegment extends PlotSegmentClass<
           cy,
           90 - (radialData.side == "opposite" ? angleEnd : angleStart),
           -1
-        )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'radial', 'position': props.yData.expression })
-      g.elements.push(
-        axis
-      );
+        );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "radial",
+        position: getMatches(props.yData.expression)
+      });
+      g.elements.push(axis);
     }
     if (angularData && angularData.visible) {
       const axis = new AxisRenderer()
@@ -370,11 +373,13 @@ export class PolarPlotSegment extends PlotSegmentClass<
           cy,
           angularData.side == "opposite" ? innerRadius : outerRadius,
           angularData.side == "opposite" ? -1 : 1
-        )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'angular', 'position': props.xData.expression })
-      g.elements.push(
-        axis
-      );
+        );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "angular",
+        position: getMatches(props.xData.expression)
+      });
+      g.elements.push(axis);
     }
     return g;
   }

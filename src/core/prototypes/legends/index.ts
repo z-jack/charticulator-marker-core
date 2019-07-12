@@ -208,6 +208,19 @@ export interface CategoricalLegendItem {
   value: number | Color | boolean;
 }
 
+function getMatches (str: string, alwaysArray: boolean = false): string | string[] {
+  const matches = [];
+  const regex = /\(([^\(\)]*)\)/g
+  let match;
+  while (match = regex.exec(str)) {
+    matches.push(match[1]);
+  }
+  if (!alwaysArray && matches.length == 1) {
+    return matches[0]
+  }
+  return matches;
+}
+
 export class CategoricalLegendClass extends LegendClass {
   public static classID: string = "legend.categorical";
   public static type: string = "legend";
@@ -272,27 +285,40 @@ export class CategoricalLegendClass extends LegendClass {
 
     const g = Graphics.makeGroup([]);
     const items = this.getLegendItems();
-    const scaleIdentity = this.object.properties.scale
-    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    const scaleIdentity = this.object.properties.scale;
+    const legendBind: { [key: string]: string | string[] } = {
+      _TYPE: "legend"
+    };
     this.parent.manager.chart.glyphs.forEach(glyph => {
       glyph.marks.forEach(mark => {
         Object.keys(mark.mappings).forEach(key => {
-          if (mark.mappings[key].type == 'scale') {
+          if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
               if (legendBind[key]) {
-                if (typeof legendBind[key] === 'string') {
-                  legendBind[key] = [legendBind[key] as string]
+                if (typeof legendBind[key] === "string") {
+                  legendBind[key] = [legendBind[key] as string];
                 }
-                (legendBind[key] as string[]).push(mapping.expression)
+                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
               } else {
-                legendBind[key] = mapping.expression
+                legendBind[key] = getMatches(mapping.expression);
               }
             }
           }
-        })
+        });
+      });
+    });
+    if (legendBind.fill || legendBind.stroke) {
+      let color: string[] = []
+      const types = ['fill', 'stroke']
+      types.forEach((t: string) => {
+        if (typeof legendBind[t] === 'string') {
+          color.push(legendBind[t] as string)
+        } else {
+          color = [...color, ...legendBind[t]]
+        }
       })
-    })
+    }
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const metrics = this.textMeasure.measure(item.label);
@@ -334,7 +360,7 @@ export class CategoricalLegendClass extends LegendClass {
     }
     const { x1, y1 } = this.getLayoutBox();
     g.transform = { x: x1, y: y1, angle: 0 };
-    g['data-datum'] = JSON.stringify(legendBind)
+    g["data-datum"] = JSON.stringify(legendBind);
     return g;
   }
 }
@@ -357,27 +383,29 @@ export class NumericalColorLegendClass extends LegendClass {
       return null;
     }
 
-    const scaleIdentity = this.object.properties.scale
-    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    const scaleIdentity = this.object.properties.scale;
+    const legendBind: { [key: string]: string | string[] } = {
+      _TYPE: "legend"
+    };
     this.parent.manager.chart.glyphs.forEach(glyph => {
       glyph.marks.forEach(mark => {
         Object.keys(mark.mappings).forEach(key => {
-          if (mark.mappings[key].type == 'scale') {
+          if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
               if (legendBind[key]) {
-                if (typeof legendBind[key] === 'string') {
-                  legendBind[key] = [legendBind[key] as string]
+                if (typeof legendBind[key] === "string") {
+                  legendBind[key] = [legendBind[key] as string];
                 }
-                (legendBind[key] as string[]).push(mapping.expression)
+                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
               } else {
-                legendBind[key] = mapping.expression
+                legendBind[key] = getMatches(mapping.expression);
               }
             }
           }
-        })
-      })
-    })
+        });
+      });
+    });
     const range = scale[0].properties
       .range as Specification.Types.ColorGradient;
     const domainMin = scale[0].properties.domainMin as number;
@@ -412,7 +440,7 @@ export class NumericalColorLegendClass extends LegendClass {
 
     const { x1, y1 } = this.getLayoutBox();
     g.transform = { x: x1, y: y1, angle: 0 };
-    g['data-datum'] = JSON.stringify(legendBind)
+    g["data-datum"] = JSON.stringify(legendBind);
     return g;
   }
 }
@@ -541,27 +569,29 @@ export class NumericalNumberLegendClass extends ChartElementClass<
       return null;
     }
 
-    const scaleIdentity = this.object.properties.scale
-    const legendBind: { [key: string]: string | string[] } = { _TYPE: 'legend' }
+    const scaleIdentity = this.object.properties.scale;
+    const legendBind: { [key: string]: string | string[] } = {
+      _TYPE: "legend"
+    };
     this.parent.manager.chart.glyphs.forEach(glyph => {
       glyph.marks.forEach(mark => {
         Object.keys(mark.mappings).forEach(key => {
-          if (mark.mappings[key].type == 'scale') {
+          if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
               if (legendBind[key]) {
-                if (typeof legendBind[key] === 'string') {
-                  legendBind[key] = [legendBind[key] as string]
+                if (typeof legendBind[key] === "string") {
+                  legendBind[key] = [legendBind[key] as string];
                 }
-                (legendBind[key] as string[]).push(mapping.expression)
+                legendBind[key] = (legendBind[key] as string[]).concat(getMatches(mapping.expression, true));
               } else {
-                legendBind[key] = mapping.expression
+                legendBind[key] = getMatches(mapping.expression);
               }
             }
           }
-        })
-      })
-    })
+        });
+      });
+    });
 
     const rangeMin = scale[1].attributes.rangeMin as number;
     const rangeMax = scale[1].attributes.rangeMax as number;
@@ -595,7 +625,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
       -1
     );
 
-    g['data-datum'] = JSON.stringify(legendBind)
+    g["data-datum"] = JSON.stringify(legendBind);
     return g;
   }
 

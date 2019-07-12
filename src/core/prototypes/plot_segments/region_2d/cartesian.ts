@@ -20,7 +20,8 @@ import {
   Region2DAttributes,
   Region2DConfiguration,
   Region2DConstraintBuilder,
-  Region2DProperties
+  Region2DProperties,
+  getMatches
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
 
@@ -286,11 +287,13 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         attrs.x1,
         props.xData.side != "default" ? attrs.y2 : attrs.y1,
         "x"
-      )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'x', 'position': props.xData.expression })
-      g.elements.push(
-        axis
       );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "x",
+        position: getMatches(props.xData.expression)
+      });
+      g.elements.push(axis);
     }
     if (props.yData && props.yData.visible) {
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
@@ -307,11 +310,13 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         props.yData.side != "default" ? attrs.x2 : attrs.x1,
         attrs.y1,
         "y"
-      )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'y', 'position': props.xData.expression })
-      g.elements.push(
-        axis
       );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "y",
+        position: getMatches(props.yData.expression)
+      });
+      g.elements.push(axis);
     }
     return g;
   }

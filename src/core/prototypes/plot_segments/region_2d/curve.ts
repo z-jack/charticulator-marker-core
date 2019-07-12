@@ -20,7 +20,8 @@ import {
   Region2DAttributes,
   Region2DConfiguration,
   Region2DConstraintBuilder,
-  Region2DProperties
+  Region2DProperties,
+  getMatches
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
 
@@ -339,11 +340,13 @@ export class CurvePlotSegment extends PlotSegmentClass<
           cs,
           props.xData.side == "opposite" ? normal2 : normal1,
           props.xData.side == "opposite" ? -1 : 1
-        )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'tangent', 'position': props.xData.expression })
-      g.elements.push(
-        axis
-      );
+        );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "tangent",
+        position: getMatches(props.xData.expression)
+      });
+      g.elements.push(axis);
     }
     if (props.yData && props.yData.visible) {
       let tr = cs.getLocalTransform(
@@ -358,11 +361,13 @@ export class CurvePlotSegment extends PlotSegmentClass<
           tr.y,
           tr.angle + 90,
           props.yData.side == "opposite" ? 1 : -1
-        )
-      axis['data-datum'] = JSON.stringify({ '_TYPE': 'axis', 'type': 'normal', 'position': props.yData.expression })
-      g.elements.push(
-        axis
-      );
+        );
+      axis["data-datum"] = JSON.stringify({
+        _TYPE: "axis",
+        type: "normal",
+        position: getMatches(props.yData.expression)
+      });
+      g.elements.push(axis);
     }
     return g;
   }

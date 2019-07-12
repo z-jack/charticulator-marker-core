@@ -18,7 +18,7 @@ import {
 import { ColorFilter, NumberModifier } from "../../core/graphics";
 
 // adapted from https://stackoverflow.com/a/20820649
-function desaturate (color: Color, amount: number) {
+function desaturate(color: Color, amount: number) {
   const { r, g, b } = color;
   const l = 0.3 * r + 0.6 * g + 0.1 * b;
   return {
@@ -31,7 +31,7 @@ function desaturate (color: Color, amount: number) {
 const srgb2lab = getColorConverter("sRGB", "lab");
 const lab2srgb = getColorConverter("lab", "sRGB");
 
-function modifyNumber (value: number, modifier: NumberModifier) {
+function modifyNumber(value: number, modifier: NumberModifier) {
   if (modifier.set != null) {
     return modifier.set;
   } else {
@@ -48,7 +48,7 @@ function modifyNumber (value: number, modifier: NumberModifier) {
   }
 }
 
-export function applyColorFilter (color: Color, colorFilter: ColorFilter) {
+export function applyColorFilter(color: Color, colorFilter: ColorFilter) {
   let [L, A, B] = srgb2lab(color.r, color.g, color.b);
   if (colorFilter.saturation) {
     const s = Math.sqrt(A * A + B * B);
@@ -68,7 +68,7 @@ export function applyColorFilter (color: Color, colorFilter: ColorFilter) {
   return { r, g, b };
 }
 
-export function renderColor (color: Color, colorFilter?: ColorFilter): string {
+export function renderColor(color: Color, colorFilter?: ColorFilter): string {
   if (!color) {
     return `rgb(0,0,0)`;
   }
@@ -80,7 +80,7 @@ export function renderColor (color: Color, colorFilter?: ColorFilter): string {
   )})`;
 }
 
-export function renderStyle (style: Graphics.Style): React.CSSProperties {
+export function renderStyle(style: Graphics.Style): React.CSSProperties {
   if (style == null) {
     return {};
   }
@@ -125,11 +125,11 @@ const path_commands: { [name: string]: (args: number[]) => string } = {
   Z: () => `Z`
 };
 
-export function renderSVGPath (cmds: Array<{ cmd: string; args: number[] }>) {
+export function renderSVGPath(cmds: Array<{ cmd: string; args: number[] }>) {
   return cmds.map(x => path_commands[x.cmd](x.args)).join(" ");
 }
 
-export function renderTransform (transform: Graphics.RigidTransform): string {
+export function renderTransform(transform: Graphics.RigidTransform): string {
   if (!transform) {
     return null;
   }
@@ -145,7 +145,7 @@ export function renderTransform (transform: Graphics.RigidTransform): string {
 }
 
 export interface DataSelection {
-  isSelected (table: string, rowIndices: number[]): boolean;
+  isSelected(table: string, rowIndices: number[]): boolean;
 }
 
 export type GraphicalElementEventHandler = (
@@ -178,7 +178,7 @@ class TextOnPath extends React.PureComponent<{
 }> {
   private pathID: string = uniqueID();
 
-  public render () {
+  public render() {
     return (
       <g>
         <defs>
@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                  ? "50%"
-                  : "100%"
+                ? "50%"
+                : "100%"
             }
           >
             {this.props.text}
@@ -208,19 +208,19 @@ class TextOnPath extends React.PureComponent<{
   }
 }
 
-function getElementClassType (datum: string): string[] {
+function getElementClassType(datum: string): string[] {
   try {
-    const data = JSON.parse(datum)
+    const data = JSON.parse(datum);
     if (data._TYPE) {
-      return [data._TYPE]
+      return [data._TYPE];
     }
-    return ['mark']
-  } catch{
-    return []
+    return ["mark"];
+  } catch {
+    return [];
   }
 }
 
-export function renderGraphicalElementSVG (
+export function renderGraphicalElementSVG(
   element: Graphics.Element,
   options?: RenderGraphicalElementSVGOptions
 ): JSX.Element {
@@ -273,7 +273,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           x={Math.min(rect.x1, rect.x2)}
@@ -293,7 +295,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           cx={circle.cx}
@@ -312,7 +316,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           cx={(ellipse.x1 + ellipse.x2) / 2}
@@ -332,7 +338,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           x1={line.x1}
@@ -352,7 +360,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           points={polygon.points
@@ -372,7 +382,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           d={d}
@@ -407,7 +419,9 @@ export function renderGraphicalElementSVG (
             id={markID(element["data-datum"])}
             className={[
               ...([options.className] || []),
-              ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+              ...(element["data-datum"]
+                ? getElementClassType(element["data-datum"])
+                : [])
             ].join(" ")}
             style={style2}
             x={text.cx}
@@ -424,7 +438,9 @@ export function renderGraphicalElementSVG (
             id={markID(element["data-datum"])}
             className={[
               ...([options.className] || []),
-              ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+              ...(element["data-datum"]
+                ? getElementClassType(element["data-datum"])
+                : [])
             ].join(" ")}
             style={style}
             x={text.cx}
@@ -448,7 +464,9 @@ export function renderGraphicalElementSVG (
             id={markID(element["data-datum"])}
             className={[
               ...([options.className] || []),
-              ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+              ...(element["data-datum"]
+                ? getElementClassType(element["data-datum"])
+                : [])
             ].join(" ")}
             style={style}
             x={text.cx}
@@ -478,7 +496,9 @@ export function renderGraphicalElementSVG (
           id={markID(element["data-datum"])}
           className={[
             ...([options.className] || []),
-            ...(element["data-datum"] ? getElementClassType(element["data-datum"]) : [])
+            ...(element["data-datum"]
+              ? getElementClassType(element["data-datum"])
+              : [])
           ].join(" ")}
           style={style}
           preserveAspectRatio={preserveAspectRatio}
@@ -499,18 +519,18 @@ export function renderGraphicalElementSVG (
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-          isSelected: (table: string, rowIndices: number[]) => {
-            // Get parent row indices from component row indices
-            const parentRowIndices = rowIndices.map(
-              x => component.selectable.rowIndices[x]
-            );
-            // Query the selection with parent row indices
-            return options.selection.isSelected(
-              component.selectable.plotSegment.table,
-              parentRowIndices
-            );
+            isSelected: (table: string, rowIndices: number[]) => {
+              // Get parent row indices from component row indices
+              const parentRowIndices = rowIndices.map(
+                x => component.selectable.rowIndices[x]
+              );
+              // Query the selection with parent row indices
+              return options.selection.isSelected(
+                component.selectable.plotSegment.table,
+                parentRowIndices
+              );
+            }
           }
-        }
         : null;
 
       const convertEventHandler = (
@@ -573,9 +593,19 @@ export function renderGraphicalElementSVG (
                 ? group.style.opacity
                 : 1
           }}
-          id={element["data-datum"] ? element["data-datum"].startsWith('{') ? null : element["data-datum"] : null}
-          className={getElementClassType(element['data-datum']).join(' ')}
-          data-datum={element["data-datum"] && element["data-datum"].startsWith('{') ? element["data-datum"] : null}
+          id={
+            element["data-datum"]
+              ? element["data-datum"].startsWith("{")
+                ? null
+                : element["data-datum"]
+              : null
+          }
+          className={getElementClassType(element["data-datum"]).join(" ")}
+          data-datum={
+            element["data-datum"] && element["data-datum"].startsWith("{")
+              ? element["data-datum"]
+              : null
+          }
           {...mouseEvents}
         >
           {group.elements.map((x, index) => {
@@ -598,8 +628,8 @@ export function renderGraphicalElementSVG (
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-  > {
-  public render () {
+> {
+  public render() {
     return renderGraphicalElementSVG(this.props.element);
   }
 }
