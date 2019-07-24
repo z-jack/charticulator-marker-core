@@ -182,9 +182,7 @@ export class ChartRenderer {
       }
     }
 
-    const g = makeGroup(graphics);
-    g["data-datum"] = "chartContent";
-    return g;
+    return makeGroup(graphics);
   }
 
   public render(): Group {
