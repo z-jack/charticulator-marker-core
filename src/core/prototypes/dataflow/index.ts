@@ -5,8 +5,8 @@ import * as Expression from "../../expression";
 import * as Specification from "../../specification";
 
 export class DataflowTableGroupedContext implements Expression.Context {
-  protected table: DataflowTable;
-  protected indices: number[];
+  public table: DataflowTable;
+  public indices: number[];
 
   constructor(table: DataflowTable, indices: number[]) {
     this.table = table;
@@ -26,7 +26,7 @@ export class DataflowTable implements Expression.Context {
     public parent: DataflowManager,
     public name: string,
     public rows: Specification.DataRow[]
-  ) {}
+  ) { }
 
   /** Implements Expression.Context */
   public getVariable(name: string) {

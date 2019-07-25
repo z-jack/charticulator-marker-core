@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                ? "50%"
-                : "100%"
+                  ? "50%"
+                  : "100%"
             }
           >
             {this.props.text}
@@ -210,9 +210,14 @@ class TextOnPath extends React.PureComponent<{
 
 function getElementClassType(datum: string): string[] {
   try {
-    const data = JSON.parse(datum);
+    let data = JSON.parse(datum);
+    if (data instanceof Array) {
+      data = data[0]
+    }
     if (data._TYPE) {
-      return [data._TYPE];
+      if (data._TYPE == 'axis' || data._TYPE == 'legend')
+        return [data._TYPE];
+      else return ['mark', data._TYPE]
     }
     return ["mark"];
   } catch {
@@ -519,18 +524,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-            isSelected: (table: string, rowIndices: number[]) => {
-              // Get parent row indices from component row indices
-              const parentRowIndices = rowIndices.map(
-                x => component.selectable.rowIndices[x]
-              );
-              // Query the selection with parent row indices
-              return options.selection.isSelected(
-                component.selectable.plotSegment.table,
-                parentRowIndices
-              );
-            }
+          isSelected: (table: string, rowIndices: number[]) => {
+            // Get parent row indices from component row indices
+            const parentRowIndices = rowIndices.map(
+              x => component.selectable.rowIndices[x]
+            );
+            // Query the selection with parent row indices
+            return options.selection.isSelected(
+              component.selectable.plotSegment.table,
+              parentRowIndices
+            );
           }
+        }
         : null;
 
       const convertEventHandler = (
@@ -628,7 +633,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-> {
+  > {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }

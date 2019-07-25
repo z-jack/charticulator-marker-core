@@ -13,7 +13,7 @@ import * as Graphics from "../../graphics";
 import * as Specification from "../../specification";
 import { ChartElementClass } from "../chart_element";
 import { Controls, ObjectClassMetadata } from "../common";
-import { DataflowTable } from "../dataflow";
+import { DataflowTable, DataflowTableGroupedContext } from "../dataflow";
 import { ChartStateManager } from "../state";
 import { AttributeDescription, ObjectClasses } from "../object";
 import { PlotSegmentClass } from "../plot_segments";
@@ -96,6 +96,7 @@ export interface AnchorCoordinates {
   points: Graphics.PointDirection[];
   curveness: number;
   coordinateSystem: Graphics.CoordinateSystem;
+  'data-datum'?: any[];
 }
 
 export interface AnchorAttributes extends AnchorCoordinates {
@@ -187,13 +188,13 @@ export abstract class LinksClass extends ChartElementClass {
         const x = (pt.x.element < 0
           ? glyphState.attributes[pt.x.attribute]
           : glyphState.marks[pt.x.element].attributes[
-              pt.x.attribute
-            ]) as number;
+          pt.x.attribute
+          ]) as number;
         const y = (pt.y.element < 0
           ? glyphState.attributes[pt.y.attribute]
           : glyphState.marks[pt.y.element].attributes[
-              pt.y.attribute
-            ]) as number;
+          pt.y.attribute
+          ]) as number;
         const px = dx + x;
         const py = dy + y;
         return {
@@ -209,7 +210,14 @@ export abstract class LinksClass extends ChartElementClass {
       coordinateSystem: cs,
       color: renderState.colorFunction(row) as Color,
       opacity: renderState.opacityFunction(row) as number,
-      strokeWidth: renderState.strokeWidthFunction(row) as number
+      strokeWidth: renderState.strokeWidthFunction(row) as number,
+      "data-datum": (row as DataflowTableGroupedContext).indices.map(i => {
+        return {
+          _x: cs.getBaseTransform().x + (glyphState.attributes.x as number),
+          _y: cs.getBaseTransform().y + (glyphState.attributes.y as number),
+          ...(row as DataflowTableGroupedContext).table.rows[i]
+        }
+      })
     };
   }
 
@@ -506,6 +514,15 @@ export abstract class LinksClass extends ChartElementClass {
                 anchors[i][0],
                 anchors[i + 1][1]
               );
+              path.path["data-datum"] = JSON.stringify(
+                anchors[i][0]["data-datum"].concat(anchors[i + 1][1]["data-datum"]).map(props => {
+                  return {
+                    _TYPE: 'link',
+                    _MARKID: this.object.properties.name,
+                    ...props
+                  }
+                })
+              )
               lines.push(path.path);
             }
             return Graphics.makeGroup(lines);
@@ -616,6 +633,12 @@ export abstract class LinksClass extends ChartElementClass {
                 anchors[i][0],
                 anchors[i + 1][1]
               );
+              path.path["data-datum"] = JSON.stringify({
+                _TYPE: 'link',
+                _MARKID: this.object.properties.name,
+                datum0: anchors[i][0]["data-datum"],
+                datum1: anchors[i + 1][1]["data-datum"]
+              })
               bands.push(path.path);
             }
             return Graphics.makeGroup(bands);
