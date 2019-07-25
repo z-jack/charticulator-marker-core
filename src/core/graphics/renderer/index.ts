@@ -69,9 +69,10 @@ export class ChartRenderer {
           this.manager,
           state.emphasized
         );
-      const markClass = this.manager
-        .getMarkClass(markState)
-      const type = markClass.object.properties.shape || markClass.object.classID.split('.')[1]
+      const markClass = this.manager.getMarkClass(markState);
+      const type =
+        markClass.object.properties.shape ||
+        markClass.object.classID.split(".")[1];
       if (g != null) {
         g.selectable = {
           plotSegment,
@@ -88,17 +89,15 @@ export class ChartRenderer {
           });
         } else {
           g["data-datum"] = JSON.stringify(
-            g.selectable.rowIndices.map(
-              i => {
-                return {
-                  _TYPE: type,
-                  _MARKID: markClass.object.properties.name,
-                  _x: coordinateSystem.getBaseTransform().x + offset.x,
-                  _y: coordinateSystem.getBaseTransform().y + offset.y,
-                  ...this.manager.dataset.tables[0].rows[i]
-                }
-              }
-            )
+            g.selectable.rowIndices.map(i => {
+              return {
+                _TYPE: type,
+                _MARKID: markClass.object.properties.name,
+                _x: coordinateSystem.getBaseTransform().x + offset.x,
+                _y: coordinateSystem.getBaseTransform().y + offset.y,
+                ...this.manager.dataset.tables[0].rows[i]
+              };
+            })
           );
         }
         return makeGroup([g]);

@@ -26,7 +26,7 @@ export class DataflowTable implements Expression.Context {
     public parent: DataflowManager,
     public name: string,
     public rows: Specification.DataRow[]
-  ) { }
+  ) {}
 
   /** Implements Expression.Context */
   public getVariable(name: string) {

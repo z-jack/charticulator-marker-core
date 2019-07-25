@@ -212,12 +212,14 @@ function getElementClassType(datum: string): string[] {
   try {
     let data = JSON.parse(datum);
     if (data instanceof Array) {
-      data = data[0]
+      data = data[0];
     }
     if (data._TYPE) {
-      if (data._TYPE == 'axis' || data._TYPE == 'legend')
+      if (data._TYPE == "axis" || data._TYPE == "legend") {
         return [data._TYPE];
-      else return ['mark', data._TYPE]
+      } else {
+        return ["mark", data._MARKID, data._TYPE];
+      }
     }
     return ["mark"];
   } catch {

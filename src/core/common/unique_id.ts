@@ -42,11 +42,11 @@ export function markID(datum: string): string {
   if (!datum) {
     return null;
   }
-  let tum = JSON.parse(datum)
+  let tum = JSON.parse(datum);
   if (tum instanceof Array) {
-    tum = tum[0]
+    tum = tum[0];
   }
-  if (tum._TYPE == 'axis' || tum._TYPE == 'legend') {
+  if (tum._TYPE == "axis" || tum._TYPE == "legend") {
     return null;
   }
   return "mark" + pointer++;

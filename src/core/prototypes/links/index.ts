@@ -96,7 +96,7 @@ export interface AnchorCoordinates {
   points: Graphics.PointDirection[];
   curveness: number;
   coordinateSystem: Graphics.CoordinateSystem;
-  'data-datum'?: any[];
+  "data-datum"?: any[];
 }
 
 export interface AnchorAttributes extends AnchorCoordinates {
@@ -188,13 +188,13 @@ export abstract class LinksClass extends ChartElementClass {
         const x = (pt.x.element < 0
           ? glyphState.attributes[pt.x.attribute]
           : glyphState.marks[pt.x.element].attributes[
-          pt.x.attribute
-          ]) as number;
+              pt.x.attribute
+            ]) as number;
         const y = (pt.y.element < 0
           ? glyphState.attributes[pt.y.attribute]
           : glyphState.marks[pt.y.element].attributes[
-          pt.y.attribute
-          ]) as number;
+              pt.y.attribute
+            ]) as number;
         const px = dx + x;
         const py = dy + y;
         return {
@@ -216,7 +216,7 @@ export abstract class LinksClass extends ChartElementClass {
           _x: cs.getBaseTransform().x + (glyphState.attributes.x as number),
           _y: cs.getBaseTransform().y + (glyphState.attributes.y as number),
           ...(row as DataflowTableGroupedContext).table.rows[i]
-        }
+        };
       })
     };
   }
@@ -515,14 +515,16 @@ export abstract class LinksClass extends ChartElementClass {
                 anchors[i + 1][1]
               );
               path.path["data-datum"] = JSON.stringify(
-                anchors[i][0]["data-datum"].concat(anchors[i + 1][1]["data-datum"]).map(props => {
-                  return {
-                    _TYPE: 'link',
-                    _MARKID: this.object.properties.name,
-                    ...props
-                  }
-                })
-              )
+                anchors[i][0]["data-datum"]
+                  .concat(anchors[i + 1][1]["data-datum"])
+                  .map(props => {
+                    return {
+                      _TYPE: "link",
+                      _MARKID: this.object.properties.name,
+                      ...props
+                    };
+                  })
+              );
               lines.push(path.path);
             }
             return Graphics.makeGroup(lines);
@@ -634,11 +636,11 @@ export abstract class LinksClass extends ChartElementClass {
                 anchors[i + 1][1]
               );
               path.path["data-datum"] = JSON.stringify({
-                _TYPE: 'link',
+                _TYPE: "link",
                 _MARKID: this.object.properties.name,
                 datum0: anchors[i][0]["data-datum"],
                 datum1: anchors[i + 1][1]["data-datum"]
-              })
+              });
               bands.push(path.path);
             }
             return Graphics.makeGroup(bands);
