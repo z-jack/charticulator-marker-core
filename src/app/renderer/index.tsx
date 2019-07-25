@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                  ? "50%"
-                  : "100%"
+                ? "50%"
+                : "100%"
             }
           >
             {this.props.text}
@@ -526,18 +526,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-          isSelected: (table: string, rowIndices: number[]) => {
-            // Get parent row indices from component row indices
-            const parentRowIndices = rowIndices.map(
-              x => component.selectable.rowIndices[x]
-            );
-            // Query the selection with parent row indices
-            return options.selection.isSelected(
-              component.selectable.plotSegment.table,
-              parentRowIndices
-            );
+            isSelected: (table: string, rowIndices: number[]) => {
+              // Get parent row indices from component row indices
+              const parentRowIndices = rowIndices.map(
+                x => component.selectable.rowIndices[x]
+              );
+              // Query the selection with parent row indices
+              return options.selection.isSelected(
+                component.selectable.plotSegment.table,
+                parentRowIndices
+              );
+            }
           }
-        }
         : null;
 
       const convertEventHandler = (
@@ -635,7 +635,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-  > {
+> {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }
