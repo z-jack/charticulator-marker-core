@@ -46,7 +46,8 @@ export function markID(datum: string): string {
   if (tum instanceof Array) {
     tum = tum[0];
   }
-  if (tum._TYPE == "axis" || tum._TYPE == "legend") {
+  if (tum._TYPE == "axis" || tum._TYPE == "legend" ||
+    tum._TYPE == "nested-chart") {
     return null;
   }
   return "mark" + pointer++;

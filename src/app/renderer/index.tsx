@@ -215,7 +215,11 @@ function getElementClassType(datum: string): string[] {
       data = data[0];
     }
     if (data._TYPE) {
-      if (data._TYPE == "axis" || data._TYPE == "legend" || data._TYPE == 'nested-chart') {
+      if (
+        data._TYPE == "axis" ||
+        data._TYPE == "legend" ||
+        data._TYPE == "nested-chart"
+      ) {
         return [data._TYPE];
       } else {
         return ["mark", data._MARKID, data._TYPE];
