@@ -602,14 +602,16 @@ export function renderGraphicalElementSVG(
           }}
           id={
             element["data-datum"]
-              ? element["data-datum"].startsWith("{") || element["data-datum"].startsWith("[")
+              ? element["data-datum"].startsWith("{") ||
+                element["data-datum"].startsWith("[")
                 ? null
                 : element["data-datum"]
               : null
           }
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
-            element["data-datum"] && element["data-datum"].startsWith("{") || element["data-datum"].startsWith("[")
+            element["data-datum"] && (element["data-datum"].startsWith("{") ||
+              element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
