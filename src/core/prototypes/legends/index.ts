@@ -71,13 +71,13 @@ export abstract class LegendClass extends ChartElementClass {
     }
   };
 
-  public initializeState (): void {
+  public initializeState(): void {
     const attrs = this.state.attributes;
     attrs.x = 0;
     attrs.y = 0;
   }
 
-  public getLayoutBox (): { x1: number; y1: number; x2: number; y2: number } {
+  public getLayoutBox(): { x1: number; y1: number; x2: number; y2: number } {
     const { x, y } = this.state.attributes;
     const [width, height] = this.getLegendSize();
     let x1: number, y1: number, x2: number, y2: number;
@@ -112,7 +112,7 @@ export abstract class LegendClass extends ChartElementClass {
     return { x1, y1, x2, y2 };
   }
 
-  public getBoundingBox (): BoundingBox.Description {
+  public getBoundingBox(): BoundingBox.Description {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = this.getLayoutBox();
     return {
@@ -125,7 +125,7 @@ export abstract class LegendClass extends ChartElementClass {
     } as BoundingBox.Rectangle;
   }
 
-  public getHandles (): Handles.Description[] {
+  public getHandles(): Handles.Description[] {
     const attrs = this.state.attributes;
     const { x, y } = attrs;
     return [
@@ -141,7 +141,7 @@ export abstract class LegendClass extends ChartElementClass {
     ];
   }
 
-  public getScale (): [Specification.Scale, Specification.ScaleState] {
+  public getScale(): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
     const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
     if (scaleIndex >= 0) {
@@ -154,11 +154,11 @@ export abstract class LegendClass extends ChartElementClass {
     }
   }
 
-  public getLegendSize (): [number, number] {
+  public getLegendSize(): [number, number] {
     return [10, 10];
   }
 
-  public getAttributePanelWidgets (
+  public getAttributePanelWidgets(
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const props = this.object.properties;
@@ -208,7 +208,7 @@ export interface CategoricalLegendItem {
   value: number | Color | boolean;
 }
 
-function getMatches (
+function getMatches(
   str: string,
   alwaysArray: boolean = false
 ): string | string[] {
@@ -230,7 +230,7 @@ export class CategoricalLegendClass extends LegendClass {
 
   private textMeasure = new Graphics.TextMeasurer();
 
-  public getLegendItems (): CategoricalLegendItem[] {
+  public getLegendItems(): CategoricalLegendItem[] {
     const scale = this.getScale();
     if (scale) {
       const [scaleObject, scaleState] = scale;
@@ -270,16 +270,16 @@ export class CategoricalLegendClass extends LegendClass {
     }
   }
 
-  public getLineHeight () {
+  public getLineHeight() {
     return this.object.properties.fontSize + 10;
   }
 
-  public getLegendSize (): [number, number] {
+  public getLegendSize(): [number, number] {
     const items = this.getLegendItems();
     return [100, items.length * this.getLineHeight()];
   }
 
-  public getGraphics (): Graphics.Element {
+  public getGraphics(): Graphics.Element {
     const fontFamily = this.object.properties.fontFamily;
     const fontSize = this.object.properties.fontSize;
     const lineHeight = this.getLineHeight();
@@ -327,9 +327,9 @@ export class CategoricalLegendClass extends LegendClass {
         }
       });
       if (color.length == 1) {
-        legendBind.color = color[0]
+        legendBind.color = color[0];
       } else {
-        legendBind.color = color
+        legendBind.color = color;
       }
     }
     for (let i = 0; i < items.length; i++) {
@@ -382,11 +382,11 @@ export class NumericalColorLegendClass extends LegendClass {
   public static classID: string = "legend.numerical-color";
   public static type: string = "legend";
 
-  public getLegendSize (): [number, number] {
+  public getLegendSize(): [number, number] {
     return [100, 100];
   }
 
-  public getGraphics (): Graphics.Element {
+  public getGraphics(): Graphics.Element {
     const height = this.getLegendSize()[1];
     const marginLeft = 5;
     const gradientWidth = 12;
@@ -435,9 +435,9 @@ export class NumericalColorLegendClass extends LegendClass {
         }
       });
       if (color.length == 1) {
-        legendBind.color = color[0]
+        legendBind.color = color[0];
       } else {
-        legendBind.color = color
+        legendBind.color = color;
       }
     }
     const range = scale[0].properties
@@ -499,7 +499,7 @@ export interface NumericalNumberLegendProperties
 export class NumericalNumberLegendClass extends ChartElementClass<
   NumericalNumberLegendProperties,
   NumericalNumberLegendAttributes
-  > {
+> {
   public static classID: string = "legend.numerical-number";
   public static type: string = "legend";
 
@@ -537,7 +537,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     }
   };
 
-  public initializeState (): void {
+  public initializeState(): void {
     const attrs = this.state.attributes;
     attrs.x1 = 0;
     attrs.y1 = 0;
@@ -545,7 +545,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     attrs.y2 = 0;
   }
 
-  public getScale (): [Specification.Scale, Specification.ScaleState] {
+  public getScale(): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
     const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
     if (scaleIndex >= 0) {
@@ -558,7 +558,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     }
   }
 
-  public getBoundingBox (): BoundingBox.Description {
+  public getBoundingBox(): BoundingBox.Description {
     return {
       type: "line",
       x1: this.state.attributes.x1,
@@ -568,7 +568,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     } as BoundingBox.Line;
   }
 
-  public getHandles (): Handles.Description[] {
+  public getHandles(): Handles.Description[] {
     const attrs = this.state.attributes;
     const { x1, y1, x2, y2 } = attrs;
     return [
@@ -593,7 +593,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     ];
   }
 
-  public getGraphics (): Graphics.Element {
+  public getGraphics(): Graphics.Element {
     const scale = this.getScale();
     if (!scale) {
       return null;
@@ -642,9 +642,9 @@ export class NumericalNumberLegendClass extends ChartElementClass<
         }
       });
       if (color.length == 1) {
-        legendBind.color = color[0]
+        legendBind.color = color[0];
       } else {
-        legendBind.color = color
+        legendBind.color = color;
       }
     }
 
@@ -684,7 +684,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     return g;
   }
 
-  public getAttributePanelWidgets (
+  public getAttributePanelWidgets(
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
     const props = this.object.properties;
@@ -696,7 +696,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
   }
 }
 
-export function registerClasses () {
+export function registerClasses() {
   ObjectClasses.Register(CategoricalLegendClass);
   ObjectClasses.Register(NumericalColorLegendClass);
   ObjectClasses.Register(NumericalNumberLegendClass);
