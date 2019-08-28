@@ -111,6 +111,7 @@ export function renderChartToLocalString(
         xmlSpace="preserve"
       >
         <g
+          id="chartContent"
           transform={`translate(${(width / 2).toFixed(6)},${(
             height / 2
           ).toFixed(6)})`}

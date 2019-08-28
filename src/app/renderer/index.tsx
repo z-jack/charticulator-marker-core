@@ -210,9 +210,20 @@ class TextOnPath extends React.PureComponent<{
 
 function getElementClassType(datum: string): string[] {
   try {
-    const data = JSON.parse(datum);
+    let data = JSON.parse(datum);
+    if (data instanceof Array) {
+      data = data[0];
+    }
     if (data._TYPE) {
-      return [data._TYPE];
+      if (
+        data._TYPE == "axis" ||
+        data._TYPE == "legend" ||
+        data._TYPE == "nested-chart"
+      ) {
+        return [data._TYPE];
+      } else {
+        return ["mark", data._MARKID, data._TYPE];
+      }
     }
     return ["mark"];
   } catch {
@@ -596,7 +607,9 @@ export function renderGraphicalElementSVG(
           id={markID(element["data-datum"])}
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
-            element["data-datum"] && element["data-datum"].startsWith("{")
+            element["data-datum"] &&
+            (element["data-datum"].startsWith("{") ||
+              element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
