@@ -593,9 +593,7 @@ export function renderGraphicalElementSVG(
                 ? group.style.opacity
                 : 1
           }}
-          id={
-            markID(element["data-datum"])
-          }
+          id={markID(element["data-datum"])}
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
             element["data-datum"] && element["data-datum"].startsWith("{")
