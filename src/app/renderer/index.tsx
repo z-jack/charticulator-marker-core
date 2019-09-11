@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                ? "50%"
-                : "100%"
+                  ? "50%"
+                  : "100%"
             }
           >
             {this.props.text}
@@ -216,10 +216,11 @@ function getElementClassType(datum: string): string[] {
     }
     if (data._TYPE) {
       if (
-        data._TYPE == "axis" ||
-        data._TYPE == "legend" ||
-        data._TYPE == "nested-chart"
+        data._TYPE.startsWith('axis') ||
+        data._TYPE == "legend"
       ) {
+        return ["extra-mark", data._TYPE];
+      } else if (data._TYPE == 'nested-chart') {
         return [data._TYPE];
       } else {
         return ["mark", data._MARKID, data._TYPE];
@@ -354,10 +355,10 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          x1={line.x1}
-          y1={-line.y1}
-          x2={line.x2}
-          y2={-line.y2}
+          x1={line.x1 + Math.random() / 1e9}
+          y1={-line.y1 + Math.random() / 1e9}
+          x2={line.x2 + Math.random() / 1e9}
+          y2={-line.y2 + Math.random() / 1e9}
           data-datum={element["data-datum"] || null}
         />
       );
@@ -530,18 +531,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-            isSelected: (table: string, rowIndices: number[]) => {
-              // Get parent row indices from component row indices
-              const parentRowIndices = rowIndices.map(
-                x => component.selectable.rowIndices[x]
-              );
-              // Query the selection with parent row indices
-              return options.selection.isSelected(
-                component.selectable.plotSegment.table,
-                parentRowIndices
-              );
-            }
+          isSelected: (table: string, rowIndices: number[]) => {
+            // Get parent row indices from component row indices
+            const parentRowIndices = rowIndices.map(
+              x => component.selectable.rowIndices[x]
+            );
+            // Query the selection with parent row indices
+            return options.selection.isSelected(
+              component.selectable.plotSegment.table,
+              parentRowIndices
+            );
           }
+        }
         : null;
 
       const convertEventHandler = (
@@ -608,8 +609,8 @@ export function renderGraphicalElementSVG(
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
             element["data-datum"] &&
-            (element["data-datum"].startsWith("{") ||
-              element["data-datum"].startsWith("["))
+              (element["data-datum"].startsWith("{") ||
+                element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
@@ -635,7 +636,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-> {
+  > {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }

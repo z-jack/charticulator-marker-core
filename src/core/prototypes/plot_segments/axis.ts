@@ -6,7 +6,7 @@ import {
   CoordinateSystem,
   Group,
   makeGroup,
-  makeLine,
+  makePathLine,
   makeText,
   Style
 } from "../../graphics";
@@ -171,7 +171,7 @@ export class AxisRenderer {
     for (let i = 0; i < ticks.length; i++) {
       const tx =
         ((ticks[i] - domainMin) / (domainMax - domainMin)) *
-          (rangeMax - rangeMin) +
+        (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,
@@ -210,7 +210,7 @@ export class AxisRenderer {
       const tx =
         ((Math.log(ticks[i]) - Math.log(domainMin)) /
           (Math.log(domainMax) - Math.log(domainMin))) *
-          (rangeMax - rangeMin) +
+        (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,
@@ -244,7 +244,7 @@ export class AxisRenderer {
     for (let i = 0; i < ticks.length; i++) {
       const tx =
         ((ticks[i] - domainMin) / (domainMax - domainMin)) *
-          (rangeMax - rangeMin) +
+        (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,
@@ -313,16 +313,28 @@ export class AxisRenderer {
     const x2 = x + rangeMax * cos;
     const y2 = y + rangeMax * sin;
     // Base line
-    g.elements.push(makeLine(x1, y1, x2, y2, lineStyle));
+    const domain = makePathLine(x1, y1, x2, y2, lineStyle)
+    domain['data-datum'] = JSON.stringify({ _TYPE: 'axis-domain' })
+    g.elements.push(domain);
     // Ticks
-    for (const tickPosition of this.ticks
-      .map(x => x.position)
-      .concat([rangeMin, rangeMax])) {
+    for (const t of this.ticks) {
+      const tickPosition = t.position
       const tx = x + tickPosition * cos,
         ty = y + tickPosition * sin;
       const dx = side * tickSize * sin,
         dy = -side * tickSize * cos;
-      g.elements.push(makeLine(tx, ty, tx + dx, ty + dy, lineStyle));
+      const tick = makePathLine(tx, ty, tx + dx, ty + dy, lineStyle)
+      tick['data-datum'] = JSON.stringify({ _TYPE: 'axis-tick', text: t.label })
+      g.elements.push(tick);
+    }
+    for (const tickPosition of [rangeMin, rangeMax]) {
+      const tx = x + tickPosition * cos,
+        ty = y + tickPosition * sin;
+      const dx = side * tickSize * sin,
+        dy = -side * tickSize * cos;
+      const tick = makePathLine(tx, ty, tx + dx, ty + dy, lineStyle)
+      tick['data-datum'] = JSON.stringify({ _TYPE: 'axis-endpoint' })
+      g.elements.push(tick);
     }
     // Tick texts
     const ticks = this.ticks.map(x => {
@@ -360,10 +372,12 @@ export class AxisRenderer {
           "middle",
           0
         );
+        const label = makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
+          fillColor: style.tickColor
+        })
+        label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
         const gText = makeGroup([
-          makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
-            fillColor: style.tickColor
-          })
+          label
         ]);
         gText.transform = {
           x: tx + dx,
@@ -380,10 +394,12 @@ export class AxisRenderer {
           "middle",
           0
         );
+        const label = makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
+          fillColor: style.tickColor
+        })
+        label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
         const gText = makeGroup([
-          makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
-            fillColor: style.tickColor
-          })
+          label
         ]);
         gText.transform = {
           x: tx + dx,
@@ -401,10 +417,12 @@ export class AxisRenderer {
             side * cos > 0 ? "top" : "bottom",
             0
           );
+          const label = makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
+            fillColor: style.tickColor
+          })
+          label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
           const gText = makeGroup([
-            makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
-              fillColor: style.tickColor
-            })
+            label
           ]);
           gText.transform = {
             x: tx + dx,
@@ -421,10 +439,12 @@ export class AxisRenderer {
             side * cos > 0 ? "top" : "bottom",
             0
           );
+          const label = makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
+            fillColor: style.tickColor
+          })
+          label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
           const gText = makeGroup([
-            makeText(px, py, tick.label, style.fontFamily, style.fontSize, {
-              fillColor: style.tickColor
-            })
+            label
           ]);
           gText.transform = {
             x: tx + dx,
@@ -490,11 +510,15 @@ export class AxisRenderer {
         0,
         2
       );
+      const label = makeText(textX, textY, tick.label, style.fontFamily, style.fontSize, {
+        fillColor: style.tickColor
+      })
+      label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
+      const ttick = makePathLine(0, 0, 0, style.tickSize * side, lineStyle)
+      ttick['data-datum'] = JSON.stringify({ _TYPE: 'axis-tick', text: tick.label })
       const gt = makeGroup([
-        makeLine(0, 0, 0, style.tickSize * side, lineStyle),
-        makeText(textX, textY, tick.label, style.fontFamily, style.fontSize, {
-          fillColor: style.tickColor
-        })
+        ttick,
+        label
       ]);
 
       gt.transform.angle = -angle;
@@ -541,11 +565,15 @@ export class AxisRenderer {
         0,
         2
       );
+      const label = makeText(textX, textY, tick.label, style.fontFamily, style.fontSize, {
+        fillColor: style.tickColor
+      })
+      label['data-datum'] = JSON.stringify({ _TYPE: 'axis-label', text: tick.label })
+      const ttick = makePathLine(0, 0, 0, -style.tickSize * side, lineStyle)
+      ttick['data-datum'] = JSON.stringify({ _TYPE: 'axis-tick', text: tick.label })
       const gt = makeGroup([
-        makeLine(0, 0, 0, -style.tickSize * side, lineStyle),
-        makeText(textX, textY, tick.label, style.fontFamily, style.fontSize, {
-          fillColor: style.tickColor
-        })
+        ttick,
+        label
       ]);
 
       gt.transform = coordinateSystem.getLocalTransform(tangent, y);

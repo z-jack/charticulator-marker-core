@@ -214,6 +214,19 @@ export function makeLine(
   return { type: "line", x1, x2, y1, y2, style };
 }
 
+export function makePathLine(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  style?: Style
+): Path {
+  const path = makePath(style)
+  path.moveTo(x1, y1)
+  path.lineTo(x2, y2)
+  return path.path
+}
+
 export function makePolygon(points: Point[], style?: Style): Polygon {
   return { type: "polygon", points, style };
 }
