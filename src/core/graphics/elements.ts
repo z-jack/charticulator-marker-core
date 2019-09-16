@@ -221,10 +221,10 @@ export function makePathLine(
   y2: number,
   style?: Style
 ): Path {
-  const path = makePath(style)
-  path.moveTo(x1, y1)
-  path.lineTo(x2, y2)
-  return path.path
+  const path = makePath(style);
+  path.moveTo(x1, y1);
+  path.lineTo(x2, y2);
+  return path.path;
 }
 
 export function makePolygon(points: Point[], style?: Style): Polygon {
@@ -252,7 +252,7 @@ export class PathMaker {
     this.path.cmds.push({ cmd: "M", args: [x, y] });
   }
   public lineTo(x: number, y: number) {
-    this.path.cmds.push({ cmd: "L", args: [x, y] });
+    this.path.cmds.push({ cmd: "L", args: [x + (Math.random() - 0.5) / 1e8, y + (Math.random() - 0.5) / 1e8] });
   }
   public cubicBezierCurveTo(
     c1x: number,

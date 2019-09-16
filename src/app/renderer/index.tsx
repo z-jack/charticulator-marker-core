@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                  ? "50%"
-                  : "100%"
+                ? "50%"
+                : "100%"
             }
           >
             {this.props.text}
@@ -215,12 +215,9 @@ function getElementClassType(datum: string): string[] {
       data = data[0];
     }
     if (data._TYPE) {
-      if (
-        data._TYPE.startsWith('axis') ||
-        data._TYPE == "legend"
-      ) {
-        return ["extra-mark", data._TYPE];
-      } else if (data._TYPE == 'nested-chart') {
+      if (data._TYPE.startsWith("axis") || data._TYPE == "legend") {
+        return ["mark", data._TYPE];
+      } else if (data._TYPE == "nested-chart") {
         return [data._TYPE];
       } else {
         return ["mark", data._MARKID, data._TYPE];
@@ -531,18 +528,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-          isSelected: (table: string, rowIndices: number[]) => {
-            // Get parent row indices from component row indices
-            const parentRowIndices = rowIndices.map(
-              x => component.selectable.rowIndices[x]
-            );
-            // Query the selection with parent row indices
-            return options.selection.isSelected(
-              component.selectable.plotSegment.table,
-              parentRowIndices
-            );
+            isSelected: (table: string, rowIndices: number[]) => {
+              // Get parent row indices from component row indices
+              const parentRowIndices = rowIndices.map(
+                x => component.selectable.rowIndices[x]
+              );
+              // Query the selection with parent row indices
+              return options.selection.isSelected(
+                component.selectable.plotSegment.table,
+                parentRowIndices
+              );
+            }
           }
-        }
         : null;
 
       const convertEventHandler = (
@@ -609,8 +606,8 @@ export function renderGraphicalElementSVG(
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
             element["data-datum"] &&
-              (element["data-datum"].startsWith("{") ||
-                element["data-datum"].startsWith("["))
+            (element["data-datum"].startsWith("{") ||
+              element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
@@ -636,7 +633,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-  > {
+> {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }

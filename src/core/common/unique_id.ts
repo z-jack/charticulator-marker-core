@@ -37,7 +37,7 @@ export function uniqueID(): string {
   }
 }
 
-let pointer = 1;
+let pointer: { [key: string]: number } = {};
 export function markID(datum: string): string {
   if (!datum) {
     return null;
@@ -47,18 +47,24 @@ export function markID(datum: string): string {
     if (tum instanceof Array) {
       tum = tum[0];
     }
-    if (tum._TYPE.startsWith("axis") || tum._TYPE == "legend" ||
-      tum._TYPE == "nested-chart") {
+    if (
+      tum._TYPE == "axis" ||
+      tum._TYPE == "nested-chart"
+    ) {
       return null;
     }
-    return "mark" + pointer++;
-  } catch{
-    return datum
+    let namespace = tum._TYPE || "base-mark-group"
+    if (pointer[namespace] === undefined) {
+      pointer[namespace] = Object.keys(pointer).length * 1000 + 1
+    }
+    return "mark" + pointer[namespace]++;
+  } catch {
+    return datum;
   }
 }
 
 export function resetMarkID() {
-  pointer = 1;
+  pointer = {};
 }
 
 let hashIndex = 1;
