@@ -79,7 +79,7 @@ export class ChartRenderer {
           glyphIndex: index,
           rowIndices: plotSegmentState.dataRowIndices[index]
         };
-        if (type !== 'text') {
+        if (type !== "text") {
           if (g.selectable.rowIndices.length == 1) {
             g["data-datum"] = JSON.stringify({
               _TYPE: type,

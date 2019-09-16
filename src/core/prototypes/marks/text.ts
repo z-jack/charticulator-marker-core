@@ -29,7 +29,7 @@ export { TextElementAttributes, TextElementProperties };
 export class TextElementClass extends EmphasizableMarkClass<
   TextElementProperties,
   TextElementAttributes
-  > {
+> {
   public static classID = "mark.text";
   public static type = "mark";
 
@@ -79,7 +79,7 @@ export class TextElementClass extends EmphasizableMarkClass<
   }
 
   // Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles)
-  public buildConstraints(solver: ConstraintSolver): void { }
+  public buildConstraints(solver: ConstraintSolver): void {}
 
   // Get the graphical element from the element
   public getGraphics(
@@ -125,37 +125,37 @@ export class TextElementClass extends EmphasizableMarkClass<
       }
     );
 
-    let parent: ObjectClass = manager.getMarkClass(this.state)
-    let datum = ''
+    let parent: ObjectClass = manager.getMarkClass(this.state);
+    let datum = "";
     while (parent !== null) {
-      parent = parent.parent
+      parent = parent.parent;
       if (parent instanceof PlotSegmentClass) {
-        const datums = parent.state.dataRowIndices[glyphIndex]
+        const datums = parent.state.dataRowIndices[glyphIndex];
         if (datums.length == 1) {
           datum = JSON.stringify({
-            _TYPE: 'text',
+            _TYPE: "text",
             _MARKID: props.name,
             _x: cs.getBaseTransform().x + offset.x,
             _y: cs.getBaseTransform().y + offset.y,
             ...manager.dataset.tables[0].rows[datums[0]]
-          })
+          });
         } else {
           datum = JSON.stringify(
             datums.map(i => {
               return {
-                _TYPE: 'text',
+                _TYPE: "text",
                 _MARKID: props.name,
                 _x: cs.getBaseTransform().x + offset.x,
                 _y: cs.getBaseTransform().y + offset.y,
                 ...manager.dataset.tables[0].rows[datums[i]]
-              }
+              };
             })
-          )
+          );
         }
-        break
+        break;
       }
     }
-    text['data-datum'] = datum
+    text["data-datum"] = datum;
     const g = Graphics.makeGroup([text]);
     g.transform = p;
     return g;
@@ -307,16 +307,16 @@ export class TextElementClass extends EmphasizableMarkClass<
           ),
           props.alignment.x != "middle"
             ? manager.horizontal(
-              [0, 1],
-              manager.label("Margin:"),
-              manager.inputNumber(
-                { property: "alignment", field: "xMargin" },
-                {
-                  updownTick: 1,
-                  showUpdown: true
-                }
+                [0, 1],
+                manager.label("Margin:"),
+                manager.inputNumber(
+                  { property: "alignment", field: "xMargin" },
+                  {
+                    updownTick: 1,
+                    showUpdown: true
+                  }
+                )
               )
-            )
             : null
         )
       ),
@@ -339,16 +339,16 @@ export class TextElementClass extends EmphasizableMarkClass<
           ),
           props.alignment.y != "middle"
             ? manager.horizontal(
-              [0, 1],
-              manager.label("Margin:"),
-              manager.inputNumber(
-                { property: "alignment", field: "yMargin" },
-                {
-                  updownTick: 1,
-                  showUpdown: true
-                }
+                [0, 1],
+                manager.label("Margin:"),
+                manager.inputNumber(
+                  { property: "alignment", field: "yMargin" },
+                  {
+                    updownTick: 1,
+                    showUpdown: true
+                  }
+                )
               )
-            )
             : null
         )
       ),
