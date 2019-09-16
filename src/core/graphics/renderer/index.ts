@@ -79,26 +79,28 @@ export class ChartRenderer {
           glyphIndex: index,
           rowIndices: plotSegmentState.dataRowIndices[index]
         };
-        if (g.selectable.rowIndices.length == 1) {
-          g["data-datum"] = JSON.stringify({
-            _TYPE: type,
-            _MARKID: markClass.object.properties.name,
-            _x: coordinateSystem.getBaseTransform().x + offset.x,
-            _y: coordinateSystem.getBaseTransform().y + offset.y,
-            ...this.manager.dataset.tables[0].rows[g.selectable.rowIndices[0]]
-          });
-        } else {
-          g["data-datum"] = JSON.stringify(
-            g.selectable.rowIndices.map(i => {
-              return {
-                _TYPE: type,
-                _MARKID: markClass.object.properties.name,
-                _x: coordinateSystem.getBaseTransform().x + offset.x,
-                _y: coordinateSystem.getBaseTransform().y + offset.y,
-                ...this.manager.dataset.tables[0].rows[i]
-              };
-            })
-          );
+        if (type !== 'text') {
+          if (g.selectable.rowIndices.length == 1) {
+            g["data-datum"] = JSON.stringify({
+              _TYPE: type,
+              _MARKID: markClass.object.properties.name,
+              _x: coordinateSystem.getBaseTransform().x + offset.x,
+              _y: coordinateSystem.getBaseTransform().y + offset.y,
+              ...this.manager.dataset.tables[0].rows[g.selectable.rowIndices[0]]
+            });
+          } else {
+            g["data-datum"] = JSON.stringify(
+              g.selectable.rowIndices.map(i => {
+                return {
+                  _TYPE: type,
+                  _MARKID: markClass.object.properties.name,
+                  _x: coordinateSystem.getBaseTransform().x + offset.x,
+                  _y: coordinateSystem.getBaseTransform().y + offset.y,
+                  ...this.manager.dataset.tables[0].rows[i]
+                };
+              })
+            );
+          }
         }
         return makeGroup([g]);
       } else {

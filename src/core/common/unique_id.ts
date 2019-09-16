@@ -47,15 +47,12 @@ export function markID(datum: string): string {
     if (tum instanceof Array) {
       tum = tum[0];
     }
-    if (
-      tum._TYPE == "axis" ||
-      tum._TYPE == "nested-chart"
-    ) {
+    if (tum._TYPE == "axis" || tum._TYPE == "nested-chart") {
       return null;
     }
-    let namespace = tum._TYPE || "base-mark-group"
+    const namespace = tum._TYPE || "base-mark-group";
     if (pointer[namespace] === undefined) {
-      pointer[namespace] = Object.keys(pointer).length * 1000 + 1
+      pointer[namespace] = Object.keys(pointer).length * 1000 + 1;
     }
     return "mark" + pointer[namespace]++;
   } catch {
