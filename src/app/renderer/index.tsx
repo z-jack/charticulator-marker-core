@@ -352,10 +352,10 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          x1={line.x1 + Math.random() / 1e4}
-          y1={-line.y1 + Math.random() / 1e4}
-          x2={line.x2 + Math.random() / 1e4}
-          y2={-line.y2 + Math.random() / 1e4}
+          x1={line.x1 + Math.random() / 1e2}
+          y1={-line.y1 + Math.random() / 1e2}
+          x2={line.x2 + Math.random() / 1e2}
+          y2={-line.y2 + Math.random() / 1e2}
           data-datum={element["data-datum"] || null}
         />
       );

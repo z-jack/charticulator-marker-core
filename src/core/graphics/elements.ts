@@ -254,7 +254,7 @@ export class PathMaker {
   public lineTo(x: number, y: number) {
     this.path.cmds.push({
       cmd: "L",
-      args: [x + (Math.random() - 0.5) / 1e4, y + (Math.random() - 0.5) / 1e4]
+      args: [x + (Math.random() - 0.5) / 1e2, y + (Math.random() - 0.5) / 1e2]
     });
   }
   public cubicBezierCurveTo(
