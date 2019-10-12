@@ -15,7 +15,7 @@ import {
   ChartComponent,
   GlyphEventHandler
 } from "../../container/chart_component";
-import { ColorFilter, NumberModifier } from "../../core/graphics";
+import { ColorFilter, NumberModifier, PathMaker, makePath } from "../../core/graphics";
 
 // adapted from https://stackoverflow.com/a/20820649
 function desaturate(color: Color, amount: number) {
@@ -196,8 +196,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                ? "50%"
-                : "100%"
+                  ? "50%"
+                  : "100%"
             }
           >
             {this.props.text}
@@ -297,8 +297,13 @@ export function renderGraphicalElementSVG(
     }
     case "circle": {
       const circle = element as Graphics.Circle;
+      const maker = makePath(options.styleOverride || element.style);
+      maker.moveTo(circle.cx - circle.r, circle.cy);
+      maker.arcTo(circle.r, circle.r, 0, 1, 0, circle.cx + circle.r, circle.cy);
+      maker.arcTo(circle.r, circle.r, 0, 1, 0, circle.cx - circle.r, circle.cy);
+      maker.closePath();
       return (
-        <circle
+        <path
           key={options.key}
           {...mouseEvents}
           id={markID(element["data-datum"])}
@@ -309,9 +314,7 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          cx={circle.cx}
-          cy={-circle.cy}
-          r={circle.r}
+          d={renderSVGPath(maker.path.cmds)}
           data-datum={element["data-datum"] || null}
         />
       );
@@ -528,18 +531,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-            isSelected: (table: string, rowIndices: number[]) => {
-              // Get parent row indices from component row indices
-              const parentRowIndices = rowIndices.map(
-                x => component.selectable.rowIndices[x]
-              );
-              // Query the selection with parent row indices
-              return options.selection.isSelected(
-                component.selectable.plotSegment.table,
-                parentRowIndices
-              );
-            }
+          isSelected: (table: string, rowIndices: number[]) => {
+            // Get parent row indices from component row indices
+            const parentRowIndices = rowIndices.map(
+              x => component.selectable.rowIndices[x]
+            );
+            // Query the selection with parent row indices
+            return options.selection.isSelected(
+              component.selectable.plotSegment.table,
+              parentRowIndices
+            );
           }
+        }
         : null;
 
       const convertEventHandler = (
@@ -606,8 +609,8 @@ export function renderGraphicalElementSVG(
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
             element["data-datum"] &&
-            (element["data-datum"].startsWith("{") ||
-              element["data-datum"].startsWith("["))
+              (element["data-datum"].startsWith("{") ||
+                element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
@@ -633,7 +636,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-> {
+  > {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }
