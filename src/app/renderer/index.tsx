@@ -15,7 +15,12 @@ import {
   ChartComponent,
   GlyphEventHandler
 } from "../../container/chart_component";
-import { ColorFilter, NumberModifier, PathMaker, makePath } from "../../core/graphics";
+import {
+  ColorFilter,
+  NumberModifier,
+  PathMaker,
+  makePath
+} from "../../core/graphics";
 
 // adapted from https://stackoverflow.com/a/20820649
 function desaturate(color: Color, amount: number) {
@@ -196,8 +201,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                  ? "50%"
-                  : "100%"
+                ? "50%"
+                : "100%"
             }
           >
             {this.props.text}
@@ -277,10 +282,10 @@ export function renderGraphicalElementSVG(
       const rect = element as Graphics.Rect;
       const maker = makePath(options.styleOverride || element.style);
       maker.moveTo(rect.x1, rect.y1);
-      maker.lineTo(rect.x1, rect.y2)
-      maker.lineTo(rect.x2, rect.y2)
-      maker.lineTo(rect.x2, rect.y1)
-      maker.closePath()
+      maker.lineTo(rect.x1, rect.y2);
+      maker.lineTo(rect.x2, rect.y2);
+      maker.lineTo(rect.x2, rect.y1);
+      maker.closePath();
       return (
         <path
           key={options.key}
@@ -325,9 +330,25 @@ export function renderGraphicalElementSVG(
     case "ellipse": {
       const ellipse = element as Graphics.Ellipse;
       const maker = makePath(options.styleOverride || element.style);
-      maker.moveTo(ellipse.x1, -(ellipse.y1 + ellipse.y2) / 2);
-      maker.arcTo(Math.abs(ellipse.x1 - ellipse.x2) / 2, Math.abs(ellipse.y1 - ellipse.y2) / 2, 0, 1, 0, ellipse.x2, -(ellipse.y1 + ellipse.y2) / 2);
-      maker.arcTo(Math.abs(ellipse.x1 - ellipse.x2) / 2, Math.abs(ellipse.y1 - ellipse.y2) / 2, 0, 1, 0, ellipse.x2, -(ellipse.y1 + ellipse.y2) / 2);
+      maker.moveTo(ellipse.x1, (ellipse.y1 + ellipse.y2) / 2);
+      maker.arcTo(
+        Math.abs(ellipse.x1 - ellipse.x2) / 2,
+        Math.abs(ellipse.y1 - ellipse.y2) / 2,
+        0,
+        1,
+        0,
+        ellipse.x2,
+        (ellipse.y1 + ellipse.y2) / 2
+      );
+      maker.arcTo(
+        Math.abs(ellipse.x1 - ellipse.x2) / 2,
+        Math.abs(ellipse.y1 - ellipse.y2) / 2,
+        0,
+        1,
+        0,
+        ellipse.x1,
+        (ellipse.y1 + ellipse.y2) / 2
+      );
       maker.closePath();
       return (
         <path
@@ -350,7 +371,7 @@ export function renderGraphicalElementSVG(
       const line = element as Graphics.Line;
       const maker = makePath(options.styleOverride || element.style);
       maker.moveTo(line.x1, line.y1);
-      maker.lineTo(line.x2, line.y2)
+      maker.lineTo(line.x2, line.y2);
       return (
         <path
           key={options.key}
@@ -371,12 +392,17 @@ export function renderGraphicalElementSVG(
     case "polygon": {
       const polygon = element as Graphics.Polygon;
       const maker = makePath(options.styleOverride || element.style);
-      maker.moveTo((polygon.points[0] || { x: 0, y: 0 }).x, (polygon.points[0] || { x: 0, y: 0 }).y);
+      maker.moveTo(
+        (polygon.points[0] || { x: 0, y: 0 }).x,
+        (polygon.points[0] || { x: 0, y: 0 }).y
+      );
       polygon.points.forEach((p, i) => {
-        if (i <= 0) return
+        if (i <= 0) {
+          return;
+        }
         maker.lineTo(p.x, p.y);
-      })
-      maker.closePath()
+      });
+      maker.closePath();
       return (
         <path
           key={options.key}
@@ -541,18 +567,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-          isSelected: (table: string, rowIndices: number[]) => {
-            // Get parent row indices from component row indices
-            const parentRowIndices = rowIndices.map(
-              x => component.selectable.rowIndices[x]
-            );
-            // Query the selection with parent row indices
-            return options.selection.isSelected(
-              component.selectable.plotSegment.table,
-              parentRowIndices
-            );
+            isSelected: (table: string, rowIndices: number[]) => {
+              // Get parent row indices from component row indices
+              const parentRowIndices = rowIndices.map(
+                x => component.selectable.rowIndices[x]
+              );
+              // Query the selection with parent row indices
+              return options.selection.isSelected(
+                component.selectable.plotSegment.table,
+                parentRowIndices
+              );
+            }
           }
-        }
         : null;
 
       const convertEventHandler = (
@@ -619,8 +645,8 @@ export function renderGraphicalElementSVG(
           className={getElementClassType(element["data-datum"]).join(" ")}
           data-datum={
             element["data-datum"] &&
-              (element["data-datum"].startsWith("{") ||
-                element["data-datum"].startsWith("["))
+            (element["data-datum"].startsWith("{") ||
+              element["data-datum"].startsWith("["))
               ? element["data-datum"]
               : null
           }
@@ -646,7 +672,7 @@ export function renderGraphicalElementSVG(
 export class GraphicalElementDisplay extends React.PureComponent<
   { element: Graphics.Element },
   {}
-  > {
+> {
   public render() {
     return renderGraphicalElementSVG(this.props.element);
   }
