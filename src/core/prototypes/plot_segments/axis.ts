@@ -171,7 +171,7 @@ export class AxisRenderer {
     for (let i = 0; i < ticks.length; i++) {
       const tx =
         ((ticks[i] - domainMin) / (domainMax - domainMin)) *
-        (rangeMax - rangeMin) +
+          (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,
@@ -210,7 +210,7 @@ export class AxisRenderer {
       const tx =
         ((Math.log(ticks[i]) - Math.log(domainMin)) /
           (Math.log(domainMax) - Math.log(domainMin))) *
-        (rangeMax - rangeMin) +
+          (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,
@@ -244,7 +244,7 @@ export class AxisRenderer {
     for (let i = 0; i < ticks.length; i++) {
       const tx =
         ((ticks[i] - domainMin) / (domainMax - domainMin)) *
-        (rangeMax - rangeMin) +
+          (rangeMax - rangeMin) +
         rangeMin;
       r.push({
         position: tx,

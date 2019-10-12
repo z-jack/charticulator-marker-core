@@ -275,8 +275,14 @@ export function renderGraphicalElementSVG(
   switch (element.type) {
     case "rect": {
       const rect = element as Graphics.Rect;
+      const maker = makePath(options.styleOverride || element.style);
+      maker.moveTo(rect.x1, rect.y1);
+      maker.lineTo(rect.x1, rect.y2)
+      maker.lineTo(rect.x2, rect.y2)
+      maker.lineTo(rect.x2, rect.y1)
+      maker.closePath()
       return (
-        <rect
+        <path
           key={options.key}
           {...mouseEvents}
           id={markID(element["data-datum"])}
@@ -287,10 +293,7 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          x={Math.min(rect.x1, rect.x2)}
-          y={-Math.max(rect.y1, rect.y2)}
-          width={Math.abs(rect.x1 - rect.x2)}
-          height={Math.abs(rect.y1 - rect.y2)}
+          d={renderSVGPath(maker.path.cmds)}
           data-datum={element["data-datum"] || null}
         />
       );
@@ -321,8 +324,13 @@ export function renderGraphicalElementSVG(
     }
     case "ellipse": {
       const ellipse = element as Graphics.Ellipse;
+      const maker = makePath(options.styleOverride || element.style);
+      maker.moveTo(ellipse.x1, -(ellipse.y1 + ellipse.y2) / 2);
+      maker.arcTo(Math.abs(ellipse.x1 - ellipse.x2) / 2, Math.abs(ellipse.y1 - ellipse.y2) / 2, 0, 1, 0, ellipse.x2, -(ellipse.y1 + ellipse.y2) / 2);
+      maker.arcTo(Math.abs(ellipse.x1 - ellipse.x2) / 2, Math.abs(ellipse.y1 - ellipse.y2) / 2, 0, 1, 0, ellipse.x2, -(ellipse.y1 + ellipse.y2) / 2);
+      maker.closePath();
       return (
-        <ellipse
+        <path
           key={options.key}
           {...mouseEvents}
           id={markID(element["data-datum"])}
@@ -333,18 +341,18 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          cx={(ellipse.x1 + ellipse.x2) / 2}
-          cy={-(ellipse.y1 + ellipse.y2) / 2}
-          rx={Math.abs(ellipse.x1 - ellipse.x2) / 2}
-          ry={Math.abs(ellipse.y1 - ellipse.y2) / 2}
+          d={renderSVGPath(maker.path.cmds)}
           data-datum={element["data-datum"] || null}
         />
       );
     }
     case "line": {
       const line = element as Graphics.Line;
+      const maker = makePath(options.styleOverride || element.style);
+      maker.moveTo(line.x1, line.y1);
+      maker.lineTo(line.x2, line.y2)
       return (
-        <line
+        <path
           key={options.key}
           {...mouseEvents}
           id={markID(element["data-datum"])}
@@ -355,18 +363,22 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          x1={line.x1 + Math.random() / 1e2}
-          y1={-line.y1 + Math.random() / 1e2}
-          x2={line.x2 + Math.random() / 1e2}
-          y2={-line.y2 + Math.random() / 1e2}
+          d={renderSVGPath(maker.path.cmds)}
           data-datum={element["data-datum"] || null}
         />
       );
     }
     case "polygon": {
       const polygon = element as Graphics.Polygon;
+      const maker = makePath(options.styleOverride || element.style);
+      maker.moveTo((polygon.points[0] || { x: 0, y: 0 }).x, (polygon.points[0] || { x: 0, y: 0 }).y);
+      polygon.points.forEach((p, i) => {
+        if (i <= 0) return
+        maker.lineTo(p.x, p.y);
+      })
+      maker.closePath()
       return (
-        <polygon
+        <path
           key={options.key}
           {...mouseEvents}
           id={markID(element["data-datum"])}
@@ -377,9 +389,7 @@ export function renderGraphicalElementSVG(
               : [])
           ].join(" ")}
           style={style}
-          points={polygon.points
-            .map(p => `${toSVGNumber(p.x)},${toSVGNumber(-p.y)}`)
-            .join(" ")}
+          d={renderSVGPath(maker.path.cmds)}
           data-datum={element["data-datum"] || null}
         />
       );

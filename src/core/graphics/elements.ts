@@ -265,10 +265,10 @@ export class PathMaker {
     x: number,
     y: number
   ) {
-    this.path.cmds.push({ cmd: "C", args: [c1x, c1y, c2x, c2y, x, y] });
+    this.path.cmds.push({ cmd: "C", args: [c1x + (Math.random() - 0.5) / 1e2, c1y + (Math.random() - 0.5) / 1e2, c2x + (Math.random() - 0.5) / 1e2, c2y + (Math.random() - 0.5) / 1e2, x + (Math.random() - 0.5) / 1e2, y + (Math.random() - 0.5) / 1e2] });
   }
   public quadraticBezierCurveTo(cx: number, cy: number, x: number, y: number) {
-    this.path.cmds.push({ cmd: "Q", args: [cx, cy, x, y] });
+    this.path.cmds.push({ cmd: "Q", args: [cx + (Math.random() - 0.5) / 1e2, cy + (Math.random() - 0.5) / 1e2, x + (Math.random() - 0.5) / 1e2, y + (Math.random() - 0.5) / 1e2] });
   }
   public arcTo(
     rx: number,
