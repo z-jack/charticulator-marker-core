@@ -11,12 +11,12 @@ import {
   Controls,
   Handles,
   ObjectClasses,
-  ObjectClassMetadata
+  ObjectClassMetadata,
 } from "../common";
 import {
   AxisRenderer,
   buildAxisAppearanceWidgets,
-  defaultAxisStyle
+  defaultAxisStyle,
 } from "../plot_segments/axis";
 
 export interface LegendAttributes extends Specification.AttributeMap {
@@ -47,7 +47,7 @@ export abstract class LegendClass extends ChartElementClass {
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Legend",
-    iconPath: "legend/legend"
+    iconPath: "legend/legend",
   };
 
   public static defaultProperties = {
@@ -56,19 +56,19 @@ export abstract class LegendClass extends ChartElementClass {
     alignY: "end",
     fontFamily: "Arial",
     fontSize: 14,
-    textColor: { r: 0, g: 0, b: 0 }
+    textColor: { r: 0, g: 0, b: 0 },
   };
 
   public attributeNames: string[] = ["x", "y"];
   public attributes: { [name: string]: AttributeDescription } = {
     x: {
       name: "x",
-      type: Specification.AttributeType.Number
+      type: Specification.AttributeType.Number,
     },
     y: {
       name: "y",
-      type: Specification.AttributeType.Number
-    }
+      type: Specification.AttributeType.Number,
+    },
   };
 
   public initializeState(): void {
@@ -121,7 +121,7 @@ export abstract class LegendClass extends ChartElementClass {
       cy: (y1 + y2) / 2,
       width: Math.abs(x2 - x1),
       height: Math.abs(y2 - y1),
-      rotation: 0
+      rotation: 0,
     } as BoundingBox.Rectangle;
   }
 
@@ -135,19 +135,22 @@ export abstract class LegendClass extends ChartElementClass {
         y,
         actions: [
           { type: "attribute", source: "x", attribute: "x" },
-          { type: "attribute", source: "y", attribute: "y" }
-        ]
-      } as Handles.Point
+          { type: "attribute", source: "y", attribute: "y" },
+        ],
+      } as Handles.Point,
     ];
   }
 
   public getScale(): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
-    const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
+    const scaleIndex = indexOf(
+      this.parent.object.scales,
+      (x) => x._id == scale
+    );
     if (scaleIndex >= 0) {
       return [
         this.parent.object.scales[scaleIndex],
-        this.parent.state.scales[scaleIndex]
+        this.parent.state.scales[scaleIndex],
       ];
     } else {
       return null;
@@ -172,7 +175,7 @@ export abstract class LegendClass extends ChartElementClass {
             type: "radio",
             icons: ["align/left", "align/x-middle", "align/right"],
             labels: ["Left", "Middle", "Right"],
-            options: ["start", "middle", "end"]
+            options: ["start", "middle", "end"],
           }
         )
       ),
@@ -184,7 +187,7 @@ export abstract class LegendClass extends ChartElementClass {
             type: "radio",
             icons: ["align/top", "align/y-middle", "align/bottom"],
             labels: ["Top", "Middle", "Bottom"],
-            options: ["end", "middle", "start"]
+            options: ["end", "middle", "start"],
           }
         )
       ),
@@ -197,7 +200,7 @@ export abstract class LegendClass extends ChartElementClass {
           { showUpdown: true, updownStyle: "font", updownTick: 2 }
         )
       ),
-      manager.row("Color", manager.inputColor({ property: "textColor" }))
+      manager.row("Color", manager.inputColor({ property: "textColor" })),
     ];
   }
 }
@@ -246,7 +249,7 @@ export class CategoricalLegendClass extends LegendClass {
                 items.push({
                   type: "boolean",
                   label: key,
-                  value: mapping[key]
+                  value: mapping[key],
                 });
               }
               break;
@@ -290,11 +293,11 @@ export class CategoricalLegendClass extends LegendClass {
     const items = this.getLegendItems();
     const scaleIdentity = this.object.properties.scale;
     const legendBind: { [key: string]: string | string[] } = {
-      _TYPE: "legend"
+      _TYPE: "legend",
     };
-    this.parent.manager.chart.glyphs.forEach(glyph => {
-      glyph.marks.forEach(mark => {
-        Object.keys(mark.mappings).forEach(key => {
+    this.parent.manager.chart.glyphs.forEach((glyph) => {
+      glyph.marks.forEach((mark) => {
+        Object.keys(mark.mappings).forEach((key) => {
           if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
@@ -352,22 +355,35 @@ export class CategoricalLegendClass extends LegendClass {
         fontSize,
         { fillColor: this.object.properties.textColor }
       );
+      textLabel["data-datum"] = JSON.stringify({
+        ...legendBind,
+        _TYPE: "legend-label",
+      });
       const gItem = Graphics.makeGroup([textLabel]);
       switch (item.type) {
         case "color":
           {
-            gItem.elements.push(
-              Graphics.makeRect(8, 4, lineHeight, lineHeight - 4, {
-                fillColor: item.value as Color
-              })
+            const colorRect = Graphics.makeRect(
+              8,
+              4,
+              lineHeight,
+              lineHeight - 4,
+              {
+                fillColor: item.value as Color,
+              }
             );
+            colorRect["data-datum"] = JSON.stringify({
+              ...legendBind,
+              _TYPE: "legend-key",
+            });
+            gItem.elements.push();
           }
           break;
       }
       gItem.transform = {
         x: 0,
         y: lineHeight * (items.length - 1 - i),
-        angle: 0
+        angle: 0,
       };
       g.elements.push(gItem);
     }
@@ -398,11 +414,11 @@ export class NumericalColorLegendClass extends LegendClass {
 
     const scaleIdentity = this.object.properties.scale;
     const legendBind: { [key: string]: string | string[] } = {
-      _TYPE: "legend"
+      _TYPE: "legend",
     };
-    this.parent.manager.chart.glyphs.forEach(glyph => {
-      glyph.marks.forEach(mark => {
-        Object.keys(mark.mappings).forEach(key => {
+    this.parent.manager.chart.glyphs.forEach((glyph) => {
+      glyph.marks.forEach((mark) => {
+        Object.keys(mark.mappings).forEach((key) => {
           if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
@@ -451,7 +467,7 @@ export class NumericalColorLegendClass extends LegendClass {
       tickColor: this.object.properties.textColor,
       fontSize: this.object.properties.fontSize,
       fontFamily: this.object.properties.fontFamily,
-      lineColor: this.object.properties.textColor
+      lineColor: this.object.properties.textColor,
     });
     const g = Graphics.makeGroup([]);
     g.elements.push(
@@ -467,7 +483,7 @@ export class NumericalColorLegendClass extends LegendClass {
       const y2 = Math.min(height, ((i + 1.5) / ticks) * height);
       g.elements.push(
         Graphics.makeRect(marginLeft, y1, marginLeft + gradientWidth, y2, {
-          fillColor: color
+          fillColor: color,
         })
       );
     }
@@ -505,7 +521,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Legend",
-    iconPath: "legend/legend"
+    iconPath: "legend/legend",
   };
 
   public static defaultProperties = {
@@ -513,28 +529,28 @@ export class NumericalNumberLegendClass extends ChartElementClass<
     axis: {
       side: "default",
       visible: true,
-      style: deepClone(defaultAxisStyle)
-    }
+      style: deepClone(defaultAxisStyle),
+    },
   };
 
   public attributeNames: string[] = ["x1", "y1", "x2", "y2"];
   public attributes: { [name: string]: AttributeDescription } = {
     x1: {
       name: "x1",
-      type: Specification.AttributeType.Number
+      type: Specification.AttributeType.Number,
     },
     y1: {
       name: "y1",
-      type: Specification.AttributeType.Number
+      type: Specification.AttributeType.Number,
     },
     x2: {
       name: "x2",
-      type: Specification.AttributeType.Number
+      type: Specification.AttributeType.Number,
     },
     y2: {
       name: "y2",
-      type: Specification.AttributeType.Number
-    }
+      type: Specification.AttributeType.Number,
+    },
   };
 
   public initializeState(): void {
@@ -547,11 +563,14 @@ export class NumericalNumberLegendClass extends ChartElementClass<
 
   public getScale(): [Specification.Scale, Specification.ScaleState] {
     const scale = this.object.properties.scale;
-    const scaleIndex = indexOf(this.parent.object.scales, x => x._id == scale);
+    const scaleIndex = indexOf(
+      this.parent.object.scales,
+      (x) => x._id == scale
+    );
     if (scaleIndex >= 0) {
       return [
         this.parent.object.scales[scaleIndex],
-        this.parent.state.scales[scaleIndex]
+        this.parent.state.scales[scaleIndex],
       ];
     } else {
       return null;
@@ -564,7 +583,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
       x1: this.state.attributes.x1,
       y1: this.state.attributes.y1,
       x2: this.state.attributes.x2,
-      y2: this.state.attributes.y2
+      y2: this.state.attributes.y2,
     } as BoundingBox.Line;
   }
 
@@ -578,8 +597,8 @@ export class NumericalNumberLegendClass extends ChartElementClass<
         y: y1,
         actions: [
           { type: "attribute", source: "x", attribute: "x1" },
-          { type: "attribute", source: "y", attribute: "y1" }
-        ]
+          { type: "attribute", source: "y", attribute: "y1" },
+        ],
       } as Handles.Point,
       {
         type: "point",
@@ -587,9 +606,9 @@ export class NumericalNumberLegendClass extends ChartElementClass<
         y: y2,
         actions: [
           { type: "attribute", source: "x", attribute: "x2" },
-          { type: "attribute", source: "y", attribute: "y2" }
-        ]
-      } as Handles.Point
+          { type: "attribute", source: "y", attribute: "y2" },
+        ],
+      } as Handles.Point,
     ];
   }
 
@@ -605,11 +624,11 @@ export class NumericalNumberLegendClass extends ChartElementClass<
 
     const scaleIdentity = this.object.properties.scale;
     const legendBind: { [key: string]: string | string[] } = {
-      _TYPE: "legend"
+      _TYPE: "legend",
     };
-    this.parent.manager.chart.glyphs.forEach(glyph => {
-      glyph.marks.forEach(mark => {
-        Object.keys(mark.mappings).forEach(key => {
+    this.parent.manager.chart.glyphs.forEach((glyph) => {
+      glyph.marks.forEach((mark) => {
+        Object.keys(mark.mappings).forEach((key) => {
           if (mark.mappings[key].type == "scale") {
             const mapping = mark.mappings[key] as Specification.ScaleMapping;
             if (mapping.scale == scaleIdentity) {
@@ -691,7 +710,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
 
     return [
       manager.sectionHeader("Axis"),
-      buildAxisAppearanceWidgets(props.axis.visible, "axis", manager)
+      buildAxisAppearanceWidgets(props.axis.visible, "axis", manager),
     ];
   }
 }
