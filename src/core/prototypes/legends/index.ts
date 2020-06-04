@@ -376,7 +376,7 @@ export class CategoricalLegendClass extends LegendClass {
               ...legendBind,
               _TYPE: "legend-key",
             });
-            gItem.elements.push();
+            gItem.elements.push(colorRect);
           }
           break;
       }
@@ -470,9 +470,17 @@ export class NumericalColorLegendClass extends LegendClass {
       lineColor: this.object.properties.textColor,
     });
     const g = Graphics.makeGroup([]);
-    g.elements.push(
-      axisRenderer.renderLine(marginLeft + gradientWidth + 2, 0, 90, 1)
+    const legendAxis = axisRenderer.renderLine(
+      marginLeft + gradientWidth + 2,
+      0,
+      90,
+      1
     );
+    legendAxis["data-datum"] = JSON.stringify({
+      ...legendBind,
+      _TYPE: "legend-axis",
+    });
+    g.elements.push(legendAxis);
 
     const ticks = height * 2;
     const interp = interpolateColors(range.colors, range.colorspace);
@@ -481,11 +489,20 @@ export class NumericalColorLegendClass extends LegendClass {
       const color = interp(t);
       const y1 = (i / ticks) * height;
       const y2 = Math.min(height, ((i + 1.5) / ticks) * height);
-      g.elements.push(
-        Graphics.makeRect(marginLeft, y1, marginLeft + gradientWidth, y2, {
+      const legendColor = Graphics.makeRect(
+        marginLeft,
+        y1,
+        marginLeft + gradientWidth,
+        y2,
+        {
           fillColor: color,
-        })
+        }
       );
+      legendColor["data-datum"] = JSON.stringify({
+        ...legendBind,
+        _TYPE: "legend-key",
+      });
+      g.elements.push(legendColor);
     }
 
     const { x1, y1 } = this.getLayoutBox();

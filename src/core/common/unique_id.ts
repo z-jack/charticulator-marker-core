@@ -47,7 +47,11 @@ export function markID(datum: string): string {
     if (tum instanceof Array) {
       tum = tum[0];
     }
-    if (tum._TYPE == "axis" || tum._TYPE == "nested-chart") {
+    if (
+      tum._TYPE == "axis" ||
+      tum._TYPE == "nested-chart" ||
+      tum._TYPE == "legend"
+    ) {
       return null;
     }
     const namespace = tum._TYPE || "base-mark-group";

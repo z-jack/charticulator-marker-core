@@ -220,9 +220,9 @@ function getElementClassType(datum: string): string[] {
       data = data[0];
     }
     if (data._TYPE) {
-      if (data._TYPE.startsWith("axis-") || data._TYPE == "legend") {
+      if (data._TYPE.startsWith("axis-") || data._TYPE.startsWith("legend-")) {
         return ["mark", data._TYPE];
-      } else if (data._TYPE == "nested-chart" || data._TYPE == "axis") {
+      } else if (data._TYPE == "nested-chart" || data._TYPE == "axis" || data._TYPE == "legend") {
         return [data._TYPE];
       } else {
         return ["mark", data._MARKID, data._TYPE];
